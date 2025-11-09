@@ -29,22 +29,31 @@ namespace Clave2_Grupo3.Forms
             {
                 lblBienvenida.Text = $"Bienvenido {usuarioActual.NombreUsuario}";
 
-                // 👇 Se muestra solo si el rol es exactamente "Administrador" (sin importar mayúsculas)
+                // Mostrar botones según rol
                 if (usuarioActual.Rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                 {
                     btnUsuarios.Visible = true;
+                    btnVuelos.Visible = true;
                 }
-                else
+                else if (usuarioActual.Rol.Equals("Operador", StringComparison.OrdinalIgnoreCase))
                 {
                     btnUsuarios.Visible = false;
+                    btnVuelos.Visible = true; // el operador también puede ver vuelos
+                }
+                else // Cliente
+                {
+                    btnUsuarios.Visible = false;
+                    btnVuelos.Visible = false;
                 }
             }
             else
             {
                 lblBienvenida.Text = "Bienvenido al sistema";
                 btnUsuarios.Visible = false;
+                btnVuelos.Visible = false;
             }
         }
+
 
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
@@ -58,5 +67,12 @@ namespace Clave2_Grupo3.Forms
             LoginForm login = new LoginForm();
             login.Show();
         }
+
+        private void btnVuelos_Click(object sender, EventArgs e)
+        {
+            VuelosForm formVuelos = new VuelosForm();
+            formVuelos.ShowDialog();
+        }
+
     }
 }

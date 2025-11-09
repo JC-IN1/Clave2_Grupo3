@@ -32,6 +32,7 @@ namespace Clave2_Grupo3.Forms
             this.lblBienvenida = new System.Windows.Forms.Label();
             this.btnUsuarios = new System.Windows.Forms.Button();
             this.btnCerrarSesion = new System.Windows.Forms.Button();
+            this.btnVuelos = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblBienvenida
@@ -64,11 +65,22 @@ namespace Clave2_Grupo3.Forms
             this.btnCerrarSesion.UseVisualStyleBackColor = true;
             this.btnCerrarSesion.Click += new System.EventHandler(this.btnCerrarSesion_Click);
             // 
+            // btnVuelos
+            // 
+            this.btnVuelos.Location = new System.Drawing.Point(815, 39);
+            this.btnVuelos.Name = "btnVuelos";
+            this.btnVuelos.Size = new System.Drawing.Size(137, 39);
+            this.btnVuelos.TabIndex = 3;
+            this.btnVuelos.Text = "Gestionar Vuelos";
+            this.btnVuelos.UseVisualStyleBackColor = true;
+            this.btnVuelos.Click += new System.EventHandler(this.btnVuelos_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1317, 649);
+            this.Controls.Add(this.btnVuelos);
             this.Controls.Add(this.btnCerrarSesion);
             this.Controls.Add(this.btnUsuarios);
             this.Controls.Add(this.lblBienvenida);
@@ -85,5 +97,6 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.Label lblBienvenida;
         private System.Windows.Forms.Button btnUsuarios;
         private System.Windows.Forms.Button btnCerrarSesion;
+        private System.Windows.Forms.Button btnVuelos;
     }
 }
