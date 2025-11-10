@@ -35,12 +35,13 @@ namespace Clave2_Grupo3.Forms
             this.txtContrasena = new System.Windows.Forms.TextBox();
             this.btnIngresar = new System.Windows.Forms.Button();
             this.lblMensaje = new System.Windows.Forms.Label();
+            this.lblGestion = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblUsuario
             // 
             this.lblUsuario.AutoSize = true;
-            this.lblUsuario.Location = new System.Drawing.Point(170, 95);
+            this.lblUsuario.Location = new System.Drawing.Point(220, 141);
             this.lblUsuario.Name = "lblUsuario";
             this.lblUsuario.Size = new System.Drawing.Size(57, 17);
             this.lblUsuario.TabIndex = 0;
@@ -48,7 +49,7 @@ namespace Clave2_Grupo3.Forms
             // 
             // txtUsuario
             // 
-            this.txtUsuario.Location = new System.Drawing.Point(295, 95);
+            this.txtUsuario.Location = new System.Drawing.Point(345, 141);
             this.txtUsuario.Name = "txtUsuario";
             this.txtUsuario.Size = new System.Drawing.Size(100, 22);
             this.txtUsuario.TabIndex = 1;
@@ -56,7 +57,7 @@ namespace Clave2_Grupo3.Forms
             // lblContrasena
             // 
             this.lblContrasena.AutoSize = true;
-            this.lblContrasena.Location = new System.Drawing.Point(146, 151);
+            this.lblContrasena.Location = new System.Drawing.Point(196, 197);
             this.lblContrasena.Name = "lblContrasena";
             this.lblContrasena.Size = new System.Drawing.Size(81, 17);
             this.lblContrasena.TabIndex = 2;
@@ -64,7 +65,7 @@ namespace Clave2_Grupo3.Forms
             // 
             // txtContrasena
             // 
-            this.txtContrasena.Location = new System.Drawing.Point(295, 151);
+            this.txtContrasena.Location = new System.Drawing.Point(345, 197);
             this.txtContrasena.Name = "txtContrasena";
             this.txtContrasena.PasswordChar = '*';
             this.txtContrasena.Size = new System.Drawing.Size(100, 22);
@@ -72,7 +73,7 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnIngresar
             // 
-            this.btnIngresar.Location = new System.Drawing.Point(214, 224);
+            this.btnIngresar.Location = new System.Drawing.Point(264, 270);
             this.btnIngresar.Name = "btnIngresar";
             this.btnIngresar.Size = new System.Drawing.Size(98, 29);
             this.btnIngresar.TabIndex = 4;
@@ -84,16 +85,27 @@ namespace Clave2_Grupo3.Forms
             // 
             this.lblMensaje.AutoSize = true;
             this.lblMensaje.ForeColor = System.Drawing.Color.Red;
-            this.lblMensaje.Location = new System.Drawing.Point(233, 296);
+            this.lblMensaje.Location = new System.Drawing.Point(237, 344);
             this.lblMensaje.Name = "lblMensaje";
             this.lblMensaje.Size = new System.Drawing.Size(0, 17);
             this.lblMensaje.TabIndex = 5;
+            // 
+            // lblGestion
+            // 
+            this.lblGestion.AutoSize = true;
+            this.lblGestion.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGestion.Location = new System.Drawing.Point(193, 57);
+            this.lblGestion.Name = "lblGestion";
+            this.lblGestion.Size = new System.Drawing.Size(274, 32);
+            this.lblGestion.TabIndex = 6;
+            this.lblGestion.Text = "Gestion de Boletos";
             // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 409);
+            this.ClientSize = new System.Drawing.Size(651, 365);
+            this.Controls.Add(this.lblGestion);
             this.Controls.Add(this.lblMensaje);
             this.Controls.Add(this.btnIngresar);
             this.Controls.Add(this.txtContrasena);
@@ -116,5 +128,6 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.TextBox txtContrasena;
         private System.Windows.Forms.Button btnIngresar;
         private System.Windows.Forms.Label lblMensaje;
+        private System.Windows.Forms.Label lblGestion;
     }
 }

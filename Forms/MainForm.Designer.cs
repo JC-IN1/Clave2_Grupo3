@@ -33,21 +33,22 @@ namespace Clave2_Grupo3.Forms
             this.btnUsuarios = new System.Windows.Forms.Button();
             this.btnCerrarSesion = new System.Windows.Forms.Button();
             this.btnVuelos = new System.Windows.Forms.Button();
+            this.btnReservas = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblBienvenida
             // 
             this.lblBienvenida.AutoSize = true;
-            this.lblBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBienvenida.Location = new System.Drawing.Point(73, 53);
+            this.lblBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBienvenida.Location = new System.Drawing.Point(269, 70);
             this.lblBienvenida.Name = "lblBienvenida";
-            this.lblBienvenida.Size = new System.Drawing.Size(119, 25);
+            this.lblBienvenida.Size = new System.Drawing.Size(168, 32);
             this.lblBienvenida.TabIndex = 0;
             this.lblBienvenida.Text = "Bienvenido";
             // 
             // btnUsuarios
             // 
-            this.btnUsuarios.Location = new System.Drawing.Point(978, 39);
+            this.btnUsuarios.Location = new System.Drawing.Point(283, 166);
             this.btnUsuarios.Name = "btnUsuarios";
             this.btnUsuarios.Size = new System.Drawing.Size(154, 39);
             this.btnUsuarios.TabIndex = 1;
@@ -57,7 +58,7 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnCerrarSesion
             // 
-            this.btnCerrarSesion.Location = new System.Drawing.Point(1153, 39);
+            this.btnCerrarSesion.Location = new System.Drawing.Point(620, 166);
             this.btnCerrarSesion.Name = "btnCerrarSesion";
             this.btnCerrarSesion.Size = new System.Drawing.Size(132, 39);
             this.btnCerrarSesion.TabIndex = 2;
@@ -67,7 +68,7 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnVuelos
             // 
-            this.btnVuelos.Location = new System.Drawing.Point(815, 39);
+            this.btnVuelos.Location = new System.Drawing.Point(463, 166);
             this.btnVuelos.Name = "btnVuelos";
             this.btnVuelos.Size = new System.Drawing.Size(137, 39);
             this.btnVuelos.TabIndex = 3;
@@ -75,11 +76,22 @@ namespace Clave2_Grupo3.Forms
             this.btnVuelos.UseVisualStyleBackColor = true;
             this.btnVuelos.Click += new System.EventHandler(this.btnVuelos_Click);
             // 
+            // btnReservas
+            // 
+            this.btnReservas.Location = new System.Drawing.Point(93, 166);
+            this.btnReservas.Name = "btnReservas";
+            this.btnReservas.Size = new System.Drawing.Size(157, 39);
+            this.btnReservas.TabIndex = 4;
+            this.btnReservas.Text = "Gestionar Reservas";
+            this.btnReservas.UseVisualStyleBackColor = true;
+            this.btnReservas.Click += new System.EventHandler(this.btnReservas_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1317, 649);
+            this.ClientSize = new System.Drawing.Size(860, 332);
+            this.Controls.Add(this.btnReservas);
             this.Controls.Add(this.btnVuelos);
             this.Controls.Add(this.btnCerrarSesion);
             this.Controls.Add(this.btnUsuarios);
@@ -98,5 +110,6 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.Button btnUsuarios;
         private System.Windows.Forms.Button btnCerrarSesion;
         private System.Windows.Forms.Button btnVuelos;
+        private System.Windows.Forms.Button btnReservas;
     }
 }

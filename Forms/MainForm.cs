@@ -29,21 +29,26 @@ namespace Clave2_Grupo3.Forms
             {
                 lblBienvenida.Text = $"Bienvenido {usuarioActual.NombreUsuario}";
 
+                // Ocultar todo por defecto
+                btnUsuarios.Visible = false;
+                btnVuelos.Visible = false;
+                btnReservas.Visible = false;
+
                 // Mostrar botones según rol
                 if (usuarioActual.Rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                 {
                     btnUsuarios.Visible = true;
                     btnVuelos.Visible = true;
+                    btnReservas.Visible = true;
                 }
                 else if (usuarioActual.Rol.Equals("Operador", StringComparison.OrdinalIgnoreCase))
                 {
-                    btnUsuarios.Visible = false;
                     btnVuelos.Visible = true; // el operador también puede ver vuelos
+                    btnReservas.Visible = true;
                 }
                 else // Cliente
                 {
-                    btnUsuarios.Visible = false;
-                    btnVuelos.Visible = false;
+                    btnReservas.Visible = true;
                 }
             }
             else
@@ -51,6 +56,7 @@ namespace Clave2_Grupo3.Forms
                 lblBienvenida.Text = "Bienvenido al sistema";
                 btnUsuarios.Visible = false;
                 btnVuelos.Visible = false;
+                btnReservas.Visible = false;
             }
         }
 
@@ -74,5 +80,10 @@ namespace Clave2_Grupo3.Forms
             formVuelos.ShowDialog();
         }
 
+        private void btnReservas_Click(object sender, EventArgs e)
+        {
+            ReservasForm formReservas = new ReservasForm(usuarioActual);
+            formReservas.ShowDialog();
+        }
     }
 }
