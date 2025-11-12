@@ -29,6 +29,7 @@ namespace Clave2_Grupo3.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblId = new System.Windows.Forms.Label();
             this.lblVuelo = new System.Windows.Forms.Label();
             this.cmbVuelo = new System.Windows.Forms.ComboBox();
@@ -50,65 +51,72 @@ namespace Clave2_Grupo3.Forms
             this.btnBuscar = new System.Windows.Forms.Button();
             this.dgvReservas = new System.Windows.Forms.DataGridView();
             this.lblReserva = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReservas)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblId
             // 
             this.lblId.AutoSize = true;
-            this.lblId.Location = new System.Drawing.Point(106, 170);
+            this.lblId.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblId.Location = new System.Drawing.Point(86, 142);
             this.lblId.Name = "lblId";
-            this.lblId.Size = new System.Drawing.Size(19, 17);
+            this.lblId.Size = new System.Drawing.Size(26, 20);
             this.lblId.TabIndex = 0;
             this.lblId.Text = "Id";
             // 
             // lblVuelo
             // 
             this.lblVuelo.AutoSize = true;
-            this.lblVuelo.Location = new System.Drawing.Point(100, 230);
+            this.lblVuelo.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVuelo.Location = new System.Drawing.Point(80, 202);
             this.lblVuelo.Name = "lblVuelo";
-            this.lblVuelo.Size = new System.Drawing.Size(44, 17);
+            this.lblVuelo.Size = new System.Drawing.Size(56, 20);
             this.lblVuelo.TabIndex = 1;
             this.lblVuelo.Text = "Vuelo";
             // 
             // cmbVuelo
             // 
             this.cmbVuelo.FormattingEnabled = true;
-            this.cmbVuelo.Location = new System.Drawing.Point(253, 223);
+            this.cmbVuelo.Location = new System.Drawing.Point(233, 195);
             this.cmbVuelo.Name = "cmbVuelo";
-            this.cmbVuelo.Size = new System.Drawing.Size(219, 24);
+            this.cmbVuelo.Size = new System.Drawing.Size(155, 28);
             this.cmbVuelo.TabIndex = 2;
             // 
             // txtId
             // 
-            this.txtId.Location = new System.Drawing.Point(253, 170);
+            this.txtId.Location = new System.Drawing.Point(288, 134);
             this.txtId.Name = "txtId";
-            this.txtId.Size = new System.Drawing.Size(100, 22);
+            this.txtId.ReadOnly = true;
+            this.txtId.Size = new System.Drawing.Size(100, 28);
             this.txtId.TabIndex = 3;
             // 
             // lblPasajero
             // 
             this.lblPasajero.AutoSize = true;
-            this.lblPasajero.Location = new System.Drawing.Point(91, 281);
+            this.lblPasajero.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPasajero.Location = new System.Drawing.Point(71, 253);
             this.lblPasajero.Name = "lblPasajero";
-            this.lblPasajero.Size = new System.Drawing.Size(64, 17);
+            this.lblPasajero.Size = new System.Drawing.Size(76, 20);
             this.lblPasajero.TabIndex = 4;
             this.lblPasajero.Text = "Pasajero";
             // 
             // cmbPasajero
             // 
             this.cmbPasajero.FormattingEnabled = true;
-            this.cmbPasajero.Location = new System.Drawing.Point(253, 274);
+            this.cmbPasajero.Location = new System.Drawing.Point(233, 246);
             this.cmbPasajero.Name = "cmbPasajero";
-            this.cmbPasajero.Size = new System.Drawing.Size(219, 24);
+            this.cmbPasajero.Size = new System.Drawing.Size(155, 28);
             this.cmbPasajero.TabIndex = 5;
             // 
             // chkEquipajeMano
             // 
             this.chkEquipajeMano.AutoSize = true;
-            this.chkEquipajeMano.Location = new System.Drawing.Point(509, 280);
+            this.chkEquipajeMano.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkEquipajeMano.Location = new System.Drawing.Point(411, 248);
             this.chkEquipajeMano.Name = "chkEquipajeMano";
-            this.chkEquipajeMano.Size = new System.Drawing.Size(144, 21);
+            this.chkEquipajeMano.Size = new System.Drawing.Size(181, 24);
             this.chkEquipajeMano.TabIndex = 6;
             this.chkEquipajeMano.Text = "Equipaje en Mano";
             this.chkEquipajeMano.UseVisualStyleBackColor = true;
@@ -116,9 +124,10 @@ namespace Clave2_Grupo3.Forms
             // chkEquipajeBodega
             // 
             this.chkEquipajeBodega.AutoSize = true;
-            this.chkEquipajeBodega.Location = new System.Drawing.Point(509, 318);
+            this.chkEquipajeBodega.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkEquipajeBodega.Location = new System.Drawing.Point(411, 286);
             this.chkEquipajeBodega.Name = "chkEquipajeBodega";
-            this.chkEquipajeBodega.Size = new System.Drawing.Size(158, 21);
+            this.chkEquipajeBodega.Size = new System.Drawing.Size(194, 24);
             this.chkEquipajeBodega.TabIndex = 7;
             this.chkEquipajeBodega.Text = "Equipaje en Bodega";
             this.chkEquipajeBodega.UseVisualStyleBackColor = true;
@@ -126,58 +135,62 @@ namespace Clave2_Grupo3.Forms
             // lblAsiento
             // 
             this.lblAsiento.AutoSize = true;
-            this.lblAsiento.Location = new System.Drawing.Point(56, 357);
+            this.lblAsiento.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAsiento.Location = new System.Drawing.Point(36, 329);
             this.lblAsiento.Name = "lblAsiento";
-            this.lblAsiento.Size = new System.Drawing.Size(152, 17);
+            this.lblAsiento.Size = new System.Drawing.Size(193, 20);
             this.lblAsiento.TabIndex = 8;
             this.lblAsiento.Text = "Preferencia de Asiento";
             // 
             // txtAsiento
             // 
-            this.txtAsiento.Location = new System.Drawing.Point(253, 357);
+            this.txtAsiento.Location = new System.Drawing.Point(288, 321);
             this.txtAsiento.Name = "txtAsiento";
-            this.txtAsiento.Size = new System.Drawing.Size(100, 22);
+            this.txtAsiento.Size = new System.Drawing.Size(100, 28);
             this.txtAsiento.TabIndex = 9;
             // 
             // lblPrecio
             // 
             this.lblPrecio.AutoSize = true;
-            this.lblPrecio.Location = new System.Drawing.Point(91, 426);
+            this.lblPrecio.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrecio.Location = new System.Drawing.Point(71, 464);
             this.lblPrecio.Name = "lblPrecio";
-            this.lblPrecio.Size = new System.Drawing.Size(79, 17);
+            this.lblPrecio.Size = new System.Drawing.Size(104, 20);
             this.lblPrecio.TabIndex = 10;
             this.lblPrecio.Text = "Precio total";
             // 
             // txtPrecio
             // 
-            this.txtPrecio.Location = new System.Drawing.Point(253, 426);
+            this.txtPrecio.Location = new System.Drawing.Point(288, 456);
             this.txtPrecio.Name = "txtPrecio";
             this.txtPrecio.ReadOnly = true;
-            this.txtPrecio.Size = new System.Drawing.Size(100, 22);
+            this.txtPrecio.Size = new System.Drawing.Size(100, 28);
             this.txtPrecio.TabIndex = 11;
             // 
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
-            this.lblEstado.Location = new System.Drawing.Point(103, 487);
+            this.lblEstado.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEstado.Location = new System.Drawing.Point(86, 398);
             this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(52, 17);
+            this.lblEstado.Size = new System.Drawing.Size(64, 20);
             this.lblEstado.TabIndex = 12;
             this.lblEstado.Text = "Estado";
             // 
             // cmbEstado
             // 
             this.cmbEstado.FormattingEnabled = true;
-            this.cmbEstado.Location = new System.Drawing.Point(253, 487);
+            this.cmbEstado.Location = new System.Drawing.Point(267, 390);
             this.cmbEstado.Name = "cmbEstado";
-            this.cmbEstado.Size = new System.Drawing.Size(121, 24);
+            this.cmbEstado.Size = new System.Drawing.Size(121, 28);
             this.cmbEstado.TabIndex = 13;
             // 
             // btnCalcular
             // 
-            this.btnCalcular.Location = new System.Drawing.Point(31, 601);
+            this.btnCalcular.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCalcular.Location = new System.Drawing.Point(16, 537);
             this.btnCalcular.Name = "btnCalcular";
-            this.btnCalcular.Size = new System.Drawing.Size(124, 37);
+            this.btnCalcular.Size = new System.Drawing.Size(109, 58);
             this.btnCalcular.TabIndex = 14;
             this.btnCalcular.Text = "Calcular Precio";
             this.btnCalcular.UseVisualStyleBackColor = true;
@@ -185,9 +198,10 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(179, 600);
+            this.btnGuardar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGuardar.Location = new System.Drawing.Point(140, 537);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(80, 38);
+            this.btnGuardar.Size = new System.Drawing.Size(103, 58);
             this.btnGuardar.TabIndex = 15;
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.UseVisualStyleBackColor = true;
@@ -195,9 +209,10 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnModificar
             // 
-            this.btnModificar.Location = new System.Drawing.Point(291, 598);
+            this.btnModificar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnModificar.Location = new System.Drawing.Point(260, 537);
             this.btnModificar.Name = "btnModificar";
-            this.btnModificar.Size = new System.Drawing.Size(83, 40);
+            this.btnModificar.Size = new System.Drawing.Size(119, 58);
             this.btnModificar.TabIndex = 16;
             this.btnModificar.Text = "Modificar";
             this.btnModificar.UseVisualStyleBackColor = true;
@@ -205,9 +220,10 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnEliminar
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(416, 600);
+            this.btnEliminar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEliminar.Location = new System.Drawing.Point(396, 537);
             this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(93, 38);
+            this.btnEliminar.Size = new System.Drawing.Size(106, 58);
             this.btnEliminar.TabIndex = 17;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
@@ -215,66 +231,93 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnBuscar
             // 
-            this.btnBuscar.Location = new System.Drawing.Point(536, 601);
+            this.btnBuscar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBuscar.Location = new System.Drawing.Point(510, 537);
             this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(84, 37);
+            this.btnBuscar.Size = new System.Drawing.Size(95, 58);
             this.btnBuscar.TabIndex = 18;
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
             // 
             // dgvReservas
             // 
+            this.dgvReservas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvReservas.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvReservas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvReservas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvReservas.Location = new System.Drawing.Point(702, 120);
+            this.dgvReservas.GridColor = System.Drawing.Color.Black;
+            this.dgvReservas.Location = new System.Drawing.Point(648, 98);
             this.dgvReservas.Name = "dgvReservas";
             this.dgvReservas.RowHeadersWidth = 51;
             this.dgvReservas.RowTemplate.Height = 24;
-            this.dgvReservas.Size = new System.Drawing.Size(551, 518);
+            this.dgvReservas.Size = new System.Drawing.Size(1010, 543);
             this.dgvReservas.TabIndex = 19;
             this.dgvReservas.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvReservas_CellClick);
             // 
             // lblReserva
             // 
             this.lblReserva.AutoSize = true;
-            this.lblReserva.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReserva.Location = new System.Drawing.Point(306, 66);
+            this.lblReserva.Font = new System.Drawing.Font("Maiandra GD", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblReserva.Location = new System.Drawing.Point(260, 54);
             this.lblReserva.Name = "lblReserva";
-            this.lblReserva.Size = new System.Drawing.Size(142, 32);
+            this.lblReserva.Size = new System.Drawing.Size(128, 34);
             this.lblReserva.TabIndex = 20;
             this.lblReserva.Text = "Reservas";
+            this.lblReserva.Click += new System.EventHandler(this.lblReserva_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.SeaShell;
+            this.groupBox1.Controls.Add(this.lblReserva);
+            this.groupBox1.Controls.Add(this.dgvReservas);
+            this.groupBox1.Controls.Add(this.btnBuscar);
+            this.groupBox1.Controls.Add(this.btnEliminar);
+            this.groupBox1.Controls.Add(this.btnModificar);
+            this.groupBox1.Controls.Add(this.btnGuardar);
+            this.groupBox1.Controls.Add(this.btnCalcular);
+            this.groupBox1.Controls.Add(this.cmbEstado);
+            this.groupBox1.Controls.Add(this.lblEstado);
+            this.groupBox1.Controls.Add(this.txtPrecio);
+            this.groupBox1.Controls.Add(this.lblPrecio);
+            this.groupBox1.Controls.Add(this.txtAsiento);
+            this.groupBox1.Controls.Add(this.lblAsiento);
+            this.groupBox1.Controls.Add(this.chkEquipajeBodega);
+            this.groupBox1.Controls.Add(this.chkEquipajeMano);
+            this.groupBox1.Controls.Add(this.cmbPasajero);
+            this.groupBox1.Controls.Add(this.lblPasajero);
+            this.groupBox1.Controls.Add(this.txtId);
+            this.groupBox1.Controls.Add(this.cmbVuelo);
+            this.groupBox1.Controls.Add(this.lblVuelo);
+            this.groupBox1.Controls.Add(this.lblId);
+            this.groupBox1.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
+            this.groupBox1.Location = new System.Drawing.Point(12, 41);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1678, 661);
+            this.groupBox1.TabIndex = 21;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Gestionar Reservas";
             // 
             // ReservasForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1265, 746);
-            this.Controls.Add(this.lblReserva);
-            this.Controls.Add(this.dgvReservas);
-            this.Controls.Add(this.btnBuscar);
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnModificar);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.btnCalcular);
-            this.Controls.Add(this.cmbEstado);
-            this.Controls.Add(this.lblEstado);
-            this.Controls.Add(this.txtPrecio);
-            this.Controls.Add(this.lblPrecio);
-            this.Controls.Add(this.txtAsiento);
-            this.Controls.Add(this.lblAsiento);
-            this.Controls.Add(this.chkEquipajeBodega);
-            this.Controls.Add(this.chkEquipajeMano);
-            this.Controls.Add(this.cmbPasajero);
-            this.Controls.Add(this.lblPasajero);
-            this.Controls.Add(this.txtId);
-            this.Controls.Add(this.cmbVuelo);
-            this.Controls.Add(this.lblVuelo);
-            this.Controls.Add(this.lblId);
+            this.BackColor = System.Drawing.Color.NavajoWhite;
+            this.ClientSize = new System.Drawing.Size(1702, 735);
+            this.Controls.Add(this.groupBox1);
             this.Name = "ReservasForm";
             this.Text = "ReservasForm";
             this.Load += new System.EventHandler(this.ReservasForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvReservas)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -301,5 +344,6 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DataGridView dgvReservas;
         private System.Windows.Forms.Label lblReserva;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

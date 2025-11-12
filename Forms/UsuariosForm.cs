@@ -22,12 +22,21 @@ namespace Clave2_Grupo3.Forms
 
         private void UsuariosForm_Load(object sender, EventArgs e)
         {
-            cmbRol.Items.AddRange(new string[] { "Administrador", "Operador" });
+            cmbRol.Items.AddRange(new string[] { "Administrador", "Operador", "Cliente" });
+
+            // Asegurar que el DataGridView permita seleccionar fila completa
+            dgvUsuarios.AutoGenerateColumns = true;
+            dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvUsuarios.MultiSelect = false;
+            dgvUsuarios.RowHeadersVisible = false;
+
             ActualizarGrid();
         }
 
+
         private void btnAgregar_Click(object sender, EventArgs e)
         {
+
             if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
             {
                 MessageBox.Show("Debe ingresar usuario y contraseña.");
@@ -49,25 +58,66 @@ namespace Clave2_Grupo3.Forms
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtId.Text))
+            MessageBox.Show($"txtId='{txtId.Text}' selectedRows={dgvUsuarios.SelectedRows.Count} rows={dgvUsuarios.Rows.Count}");
+
+            try
             {
-                MessageBox.Show("Seleccione un usuario para modificar.");
-                return;
-            }
+                // Si no hay Id en txtId, intentar tomarlo de la selección actual
+                if (string.IsNullOrWhiteSpace(txtId.Text))
+                {
+                    if (dgvUsuarios.SelectedRows.Count > 0)
+                    {
+                        var filaSel = dgvUsuarios.SelectedRows[0];
+                        txtId.Text = filaSel.Cells["Id"].Value?.ToString() ?? "";
+                        txtUsuario.Text = filaSel.Cells["NombreUsuario"].Value?.ToString() ?? "";
+                        txtContrasena.Text = filaSel.Cells["Contrasena"].Value?.ToString() ?? "";
+                        cmbRol.Text = filaSel.Cells["Rol"].Value?.ToString() ?? "";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Seleccione un usuario de la tabla para modificar.", "Atención");
+                        return;
+                    }
+                }
 
-            int id = int.Parse(txtId.Text);
-            var usuario = listaUsuarios.FirstOrDefault(u => u.Id == id);
+                if (!int.TryParse(txtId.Text, out int id))
+                {
+                    MessageBox.Show("Id inválido.", "Error");
+                    return;
+                }
 
-            if (usuario != null)
-            {
-                usuario.NombreUsuario = txtUsuario.Text;
-                usuario.Contrasena = txtContrasena.Text;
-                usuario.Rol = cmbRol.Text;
+                var usuario = listaUsuarios.FirstOrDefault(u => u.Id == id);
+                if (usuario == null)
+                {
+                    MessageBox.Show("Usuario no encontrado.", "Error");
+                    return;
+                }
 
+                // Validaciones de campos
+                if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
+                {
+                    MessageBox.Show("Complete usuario y contraseña.", "Atención");
+                    return;
+                }
+
+                // Actualizar objeto
+                usuario.NombreUsuario = txtUsuario.Text.Trim();
+                usuario.Contrasena = txtContrasena.Text.Trim();
+                usuario.Rol = cmbRol.Text.Trim();
+
+                // Refrescar grid y limpiar
                 ActualizarGrid();
                 LimpiarCampos();
+
+                MessageBox.Show("Usuario modificado correctamente.", "Éxito");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al modificar usuario: " + ex.Message);
             }
         }
+
+
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
@@ -94,20 +144,52 @@ namespace Clave2_Grupo3.Forms
 
         private void dgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            // Evitar encabezado o índices inválidos
+            if (dgvUsuarios.Rows.Count == 0 || e.RowIndex < 0) return;
+
+            try
             {
-                txtId.Text = dgvUsuarios.Rows[e.RowIndex].Cells["Id"].Value.ToString();
-                txtUsuario.Text = dgvUsuarios.Rows[e.RowIndex].Cells["NombreUsuario"].Value.ToString();
-                txtContrasena.Text = dgvUsuarios.Rows[e.RowIndex].Cells["Contrasena"].Value.ToString();
-                cmbRol.Text = dgvUsuarios.Rows[e.RowIndex].Cells["Rol"].Value.ToString();
+                var fila = dgvUsuarios.Rows[e.RowIndex];
+
+                // Usar safe access y ToString() condicional para evitar NullReference
+                txtId.Text = fila.Cells["Id"].Value?.ToString() ?? "";
+                txtUsuario.Text = fila.Cells["Nombre del Usuario"].Value?.ToString() ?? "";
+                txtContrasena.Text = fila.Cells["Contraseña"].Value?.ToString() ?? "";
+                cmbRol.Text = fila.Cells["Rol"].Value?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar fila seleccionada: " + ex.Message);
+            }
+        }
+        private void ActualizarGrid()
+        {
+            try
+            {
+                dgvUsuarios.CellClick -= dgvUsuarios_CellClick;
+
+                dgvUsuarios.AutoGenerateColumns = false; 
+                dgvUsuarios.DataSource = null;
+
+                if (listaUsuarios == null)
+                    listaUsuarios = new List<Usuario>();
+
+                dgvUsuarios.DataSource = listaUsuarios;
+                dgvUsuarios.AutoGenerateColumns = true;
+
+                dgvUsuarios.ClearSelection();
+                txtId.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar la lista de usuarios: " + ex.Message);
+            }
+            finally
+            {
+                dgvUsuarios.CellClick += dgvUsuarios_CellClick;
             }
         }
 
-        private void ActualizarGrid()
-        {
-            dgvUsuarios.DataSource = null;
-            dgvUsuarios.DataSource = listaUsuarios;
-        }
 
         private void LimpiarCampos()
         {
@@ -116,5 +198,6 @@ namespace Clave2_Grupo3.Forms
             txtContrasena.Clear();
             cmbRol.SelectedIndex = -1;
         }
+
     }
 }

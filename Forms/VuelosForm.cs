@@ -119,24 +119,54 @@ namespace Clave2_Grupo3.Forms
                 dgvVuelos.DataSource = filtrados;
             }
 
-            private void dgvVuelos_CellClick(object sender, DataGridViewCellEventArgs e)
-            {
-                if (e.RowIndex >= 0)
-                {
-                    var fila = dgvVuelos.Rows[e.RowIndex];
-                    txtId.Text = fila.Cells["Id"].Value.ToString();
-                    txtTarifa.Text = fila.Cells["TarifaBase"].Value.ToString();
-                    txtAsientos.Text = fila.Cells["AsientosDisponibles"].Value.ToString();
-                }
-            }
+        private void dgvVuelos_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvVuelos.Rows.Count == 0 || e.RowIndex < 0)
+                return;
 
-            private void ActualizarGrid()
+            try
             {
+                var fila = dgvVuelos.Rows[e.RowIndex];
+                txtId.Text = fila.Cells["Id"].Value.ToString();
+                txtTarifa.Text = fila.Cells["TarifaBase"].Value.ToString();
+                txtAsientos.Text = fila.Cells["AsientosDisponibles"].Value.ToString();
+                dtpSalida.Value = Convert.ToDateTime(fila.Cells["FechaSalida"].Value);
+                dtpLlegada.Value = Convert.ToDateTime(fila.Cells["FechaLlegada"].Value);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al seleccionar vuelo: " + ex.Message);
+            }
+        }
+
+
+        private void ActualizarGrid()
+        {
+            try
+            {
+                dgvVuelos.CellClick -= dgvVuelos_CellClick;
+
                 dgvVuelos.DataSource = null;
-                dgvVuelos.DataSource = listaVuelos;
-            }
 
-            private void LimpiarCampos()
+                if (listaVuelos != null && listaVuelos.Count > 0)
+                {
+                    dgvVuelos.DataSource = listaVuelos.ToList();
+                }
+
+                dgvVuelos.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar la lista de vuelos: " + ex.Message);
+            }
+            finally
+            {
+                dgvVuelos.CellClick += dgvVuelos_CellClick;
+            }
+        }
+
+
+        private void LimpiarCampos()
             {
                 txtId.Clear();
                 txtTarifa.Clear();

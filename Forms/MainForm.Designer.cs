@@ -34,13 +34,17 @@ namespace Clave2_Grupo3.Forms
             this.btnCerrarSesion = new System.Windows.Forms.Button();
             this.btnVuelos = new System.Windows.Forms.Button();
             this.btnReservas = new System.Windows.Forms.Button();
+            this.btnPagos = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBienvenida
             // 
             this.lblBienvenida.AutoSize = true;
             this.lblBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBienvenida.Location = new System.Drawing.Point(269, 70);
+            this.lblBienvenida.Location = new System.Drawing.Point(46, 53);
             this.lblBienvenida.Name = "lblBienvenida";
             this.lblBienvenida.Size = new System.Drawing.Size(168, 32);
             this.lblBienvenida.TabIndex = 0;
@@ -48,9 +52,10 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnUsuarios
             // 
-            this.btnUsuarios.Location = new System.Drawing.Point(283, 166);
+            this.btnUsuarios.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUsuarios.Location = new System.Drawing.Point(395, 235);
             this.btnUsuarios.Name = "btnUsuarios";
-            this.btnUsuarios.Size = new System.Drawing.Size(154, 39);
+            this.btnUsuarios.Size = new System.Drawing.Size(187, 57);
             this.btnUsuarios.TabIndex = 1;
             this.btnUsuarios.Text = "Administrar Usuarios";
             this.btnUsuarios.UseVisualStyleBackColor = true;
@@ -58,19 +63,21 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnCerrarSesion
             // 
-            this.btnCerrarSesion.Location = new System.Drawing.Point(620, 166);
+            this.btnCerrarSesion.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCerrarSesion.Location = new System.Drawing.Point(291, 323);
             this.btnCerrarSesion.Name = "btnCerrarSesion";
-            this.btnCerrarSesion.Size = new System.Drawing.Size(132, 39);
+            this.btnCerrarSesion.Size = new System.Drawing.Size(140, 57);
             this.btnCerrarSesion.TabIndex = 2;
-            this.btnCerrarSesion.Text = "Cerrar sesión";
+            this.btnCerrarSesion.Text = "Cerrar Sesión";
             this.btnCerrarSesion.UseVisualStyleBackColor = true;
             this.btnCerrarSesion.Click += new System.EventHandler(this.btnCerrarSesion_Click);
             // 
             // btnVuelos
             // 
-            this.btnVuelos.Location = new System.Drawing.Point(463, 166);
+            this.btnVuelos.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVuelos.Location = new System.Drawing.Point(150, 235);
             this.btnVuelos.Name = "btnVuelos";
-            this.btnVuelos.Size = new System.Drawing.Size(137, 39);
+            this.btnVuelos.Size = new System.Drawing.Size(187, 57);
             this.btnVuelos.TabIndex = 3;
             this.btnVuelos.Text = "Gestionar Vuelos";
             this.btnVuelos.UseVisualStyleBackColor = true;
@@ -78,29 +85,66 @@ namespace Clave2_Grupo3.Forms
             // 
             // btnReservas
             // 
-            this.btnReservas.Location = new System.Drawing.Point(93, 166);
+            this.btnReservas.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReservas.Location = new System.Drawing.Point(150, 162);
             this.btnReservas.Name = "btnReservas";
-            this.btnReservas.Size = new System.Drawing.Size(157, 39);
+            this.btnReservas.Size = new System.Drawing.Size(187, 57);
             this.btnReservas.TabIndex = 4;
             this.btnReservas.Text = "Gestionar Reservas";
             this.btnReservas.UseVisualStyleBackColor = true;
             this.btnReservas.Click += new System.EventHandler(this.btnReservas_Click);
             // 
+            // btnPagos
+            // 
+            this.btnPagos.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPagos.Location = new System.Drawing.Point(395, 162);
+            this.btnPagos.Name = "btnPagos";
+            this.btnPagos.Size = new System.Drawing.Size(187, 57);
+            this.btnPagos.TabIndex = 5;
+            this.btnPagos.Text = "Gestionar Pagos";
+            this.btnPagos.UseVisualStyleBackColor = true;
+            this.btnPagos.Click += new System.EventHandler(this.btnPagos_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.SeaShell;
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.btnPagos);
+            this.groupBox1.Controls.Add(this.btnReservas);
+            this.groupBox1.Controls.Add(this.btnVuelos);
+            this.groupBox1.Controls.Add(this.btnCerrarSesion);
+            this.groupBox1.Controls.Add(this.btnUsuarios);
+            this.groupBox1.Controls.Add(this.lblBienvenida);
+            this.groupBox1.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
+            this.groupBox1.Location = new System.Drawing.Point(67, 53);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(721, 412);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Menu Principal";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(48, 104);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(392, 20);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Utilice el menú para acceder a los distintos módulos.";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(860, 332);
-            this.Controls.Add(this.btnReservas);
-            this.Controls.Add(this.btnVuelos);
-            this.Controls.Add(this.btnCerrarSesion);
-            this.Controls.Add(this.btnUsuarios);
-            this.Controls.Add(this.lblBienvenida);
+            this.BackColor = System.Drawing.Color.NavajoWhite;
+            this.ClientSize = new System.Drawing.Size(860, 525);
+            this.Controls.Add(this.groupBox1);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -111,5 +155,8 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.Button btnCerrarSesion;
         private System.Windows.Forms.Button btnVuelos;
         private System.Windows.Forms.Button btnReservas;
+        private System.Windows.Forms.Button btnPagos;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label1;
     }
 }

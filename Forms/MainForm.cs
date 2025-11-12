@@ -33,6 +33,7 @@ namespace Clave2_Grupo3.Forms
                 btnUsuarios.Visible = false;
                 btnVuelos.Visible = false;
                 btnReservas.Visible = false;
+                btnPagos.Visible = false;
 
                 // Mostrar botones según rol
                 if (usuarioActual.Rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
@@ -40,15 +41,18 @@ namespace Clave2_Grupo3.Forms
                     btnUsuarios.Visible = true;
                     btnVuelos.Visible = true;
                     btnReservas.Visible = true;
+                    btnPagos.Visible = true;
                 }
                 else if (usuarioActual.Rol.Equals("Operador", StringComparison.OrdinalIgnoreCase))
                 {
                     btnVuelos.Visible = true; // el operador también puede ver vuelos
                     btnReservas.Visible = true;
+                    btnPagos.Visible = true;
                 }
                 else // Cliente
                 {
                     btnReservas.Visible = true;
+                    btnPagos.Visible = true;
                 }
             }
             else
@@ -57,6 +61,7 @@ namespace Clave2_Grupo3.Forms
                 btnUsuarios.Visible = false;
                 btnVuelos.Visible = false;
                 btnReservas.Visible = false;
+                btnPagos.Visible = false;
             }
         }
 
@@ -84,6 +89,12 @@ namespace Clave2_Grupo3.Forms
         {
             ReservasForm formReservas = new ReservasForm(usuarioActual);
             formReservas.ShowDialog();
+        }
+
+        private void btnPagos_Click(object sender, EventArgs e)
+        {
+            PagosForm formPagos = new PagosForm(usuarioActual);
+            formPagos.ShowDialog();
         }
     }
 }
