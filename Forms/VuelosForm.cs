@@ -8,173 +8,356 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Clave2_Grupo3.Models;
-
+using MySql.Data.MySqlClient;
+using Clave2_Grupo3.Conexion;
 
 namespace Clave2_Grupo3.Forms
 {
     public partial class VuelosForm : Form
     {
-        private List<Vuelo> listaVuelos = new List<Vuelo>();
-        private List<Aerolinea> listaAerolineas = new List<Aerolinea>();
-        private List<Avion> listaAviones = new List<Avion>();
-        private List<Ruta> listaRutas = new List<Ruta>();
-        private int siguienteId = 1;
         public VuelosForm()
         {
             InitializeComponent();
         }
-
+        private Usuario usuarioActual;
+        public VuelosForm(Usuario usuario)
+        {
+            InitializeComponent();
+            usuarioActual = usuario;
+        }
         private void VuelosForm_Load(object sender, EventArgs e)
         {
-            // 🔹 Datos simulados para los combos
-            listaAerolineas.Add(new Aerolinea { Id = 1, Nombre = "Avianca", Codigo = "AV" });
-            listaAerolineas.Add(new Aerolinea { Id = 2, Nombre = "Copa Airlines", Codigo = "CM" });
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
 
-            listaAviones.Add(new Avion { Id = 1, Modelo = "Airbus A320", Capacidad = 180, Matricula = "N123AV" });
-            listaAviones.Add(new Avion { Id = 2, Modelo = "Boeing 737", Capacidad = 160, Matricula = "HP567CM" });
+                    // Cargar Aerolíneas
+                    MySqlDataAdapter daAerolineas = new MySqlDataAdapter("SELECT id, nombre FROM aerolineas", conn);
+                    DataTable dtAerolineas = new DataTable();
+                    daAerolineas.Fill(dtAerolineas);
+                    cmbAerolinea.DataSource = dtAerolineas;
+                    cmbAerolinea.DisplayMember = "nombre";
+                    cmbAerolinea.ValueMember = "id";
 
-            listaRutas.Add(new Ruta { Id = 1, Origen = "San Salvador", Destino = "Panama", DistanciaKm = 1000 });
-            listaRutas.Add(new Ruta { Id = 2, Origen = "San Salvador", Destino = "Miami", DistanciaKm = 1800 });
+                    // Cargar Aviones
+                    MySqlDataAdapter daAviones = new MySqlDataAdapter("SELECT id, modelo FROM aviones", conn);
+                    DataTable dtAviones = new DataTable();
+                    daAviones.Fill(dtAviones);
+                    cmbAvion.DataSource = dtAviones;
+                    cmbAvion.DisplayMember = "modelo";
+                    cmbAvion.ValueMember = "id";
 
-            cmbAerolinea.DataSource = listaAerolineas;
-            cmbAerolinea.DisplayMember = "Nombre";
-            cmbAerolinea.ValueMember = "Id";
+                    // Cargar Rutas
+                    MySqlDataAdapter daRutas = new MySqlDataAdapter("SELECT id, CONCAT(origen, ' → ', destino) AS descripcion FROM rutas", conn);
+                    DataTable dtRutas = new DataTable();
+                    daRutas.Fill(dtRutas);
+                    cmbRuta.DataSource = dtRutas;
+                    cmbRuta.DisplayMember = "descripcion";
+                    cmbRuta.ValueMember = "id";
+                }
 
-            cmbAvion.DataSource = listaAviones;
-            cmbAvion.DisplayMember = "Modelo";
-            cmbAvion.ValueMember = "Id";
+                // Finalmente cargar los vuelos
+                CargarCombosDesdeBD();
+                CargarVuelosDesdeBD();
 
-            cmbRuta.DataSource = listaRutas;
-            cmbRuta.DisplayMember = "Descripcion";
-            cmbRuta.ValueMember = "Id";
-
-            ActualizarGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar datos del formulario de vuelos: " + ex.Message);
+            }
         }
 
+
         private void btnAgregar_Click(object sender, EventArgs e)
+        {
+            try
             {
-                if (cmbAerolinea.SelectedItem == null || cmbAvion.SelectedItem == null || cmbRuta.SelectedItem == null)
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
                 {
-                    MessageBox.Show("Debe seleccionar todos los datos del vuelo.");
-                    return;
+                    conn.Open();
+                    string query = @"INSERT INTO vuelos (aerolinea_id, avion_id, ruta_id, fecha_salida, fecha_llegada, tarifa_base, asientos_disponibles)
+                             VALUES (@aerolinea, @avion, @ruta, @salida, @llegada, @tarifa, @asientos)";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    cmd.Parameters.AddWithValue("@aerolinea", cmbAerolinea.SelectedValue);
+                    cmd.Parameters.AddWithValue("@avion", cmbAvion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@ruta", cmbRuta.SelectedValue);
+                    cmd.Parameters.AddWithValue("@salida", dtpSalida.Value);
+                    cmd.Parameters.AddWithValue("@llegada", dtpLlegada.Value);
+                    cmd.Parameters.AddWithValue("@tarifa", decimal.Parse(txtTarifa.Text));
+                    cmd.Parameters.AddWithValue("@asientos", int.Parse(txtAsientos.Text));
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Vuelo agregado correctamente.");
                 }
 
-                Vuelo nuevo = new Vuelo
-                {
-                    Id = siguienteId++,
-                    AerolineaId = ((Aerolinea)cmbAerolinea.SelectedItem).Id,
-                    AvionId = ((Avion)cmbAvion.SelectedItem).Id,
-                    RutaId = ((Ruta)cmbRuta.SelectedItem).Id,
-                    FechaSalida = dtpSalida.Value,
-                    FechaLlegada = dtpLlegada.Value,
-                    TarifaBase = decimal.Parse(txtTarifa.Text),
-                    AsientosDisponibles = int.Parse(txtAsientos.Text)
-                };
+                CargarVuelosDesdeBD();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al agregar vuelo: " + ex.Message);
+            }
+            LimpiarCampos();
+        }
 
-                listaVuelos.Add(nuevo);
-                ActualizarGrid();
-                LimpiarCampos();
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Seleccione un vuelo para modificar.");
+                return;
             }
 
-            private void btnModificar_Click(object sender, EventArgs e)
+            try
             {
-                if (string.IsNullOrWhiteSpace(txtId.Text)) return;
-
-                int id = int.Parse(txtId.Text);
-                var vuelo = listaVuelos.FirstOrDefault(v => v.Id == id);
-
-                if (vuelo != null)
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
                 {
-                    vuelo.AerolineaId = ((Aerolinea)cmbAerolinea.SelectedItem).Id;
-                    vuelo.AvionId = ((Avion)cmbAvion.SelectedItem).Id;
-                    vuelo.RutaId = ((Ruta)cmbRuta.SelectedItem).Id;
-                    vuelo.FechaSalida = dtpSalida.Value;
-                    vuelo.FechaLlegada = dtpLlegada.Value;
-                    vuelo.TarifaBase = decimal.Parse(txtTarifa.Text);
-                    vuelo.AsientosDisponibles = int.Parse(txtAsientos.Text);
+                    conn.Open();
+                    string query = @"UPDATE vuelos 
+                             SET aerolinea_id=@aerolinea, avion_id=@avion, ruta_id=@ruta, 
+                                 fecha_salida=@salida, fecha_llegada=@llegada, 
+                                 tarifa_base=@tarifa, asientos_disponibles=@asientos
+                             WHERE id=@id";
 
-                    ActualizarGrid();
-                    LimpiarCampos();
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    cmd.Parameters.AddWithValue("@aerolinea", cmbAerolinea.SelectedValue);
+                    cmd.Parameters.AddWithValue("@avion", cmbAvion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@ruta", cmbRuta.SelectedValue);
+                    cmd.Parameters.AddWithValue("@salida", dtpSalida.Value);
+                    cmd.Parameters.AddWithValue("@llegada", dtpLlegada.Value);
+                    cmd.Parameters.AddWithValue("@tarifa", decimal.Parse(txtTarifa.Text));
+                    cmd.Parameters.AddWithValue("@asientos", int.Parse(txtAsientos.Text));
+                    cmd.Parameters.AddWithValue("@id", int.Parse(txtId.Text));
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Vuelo modificado correctamente.");
+                }
+
+                CargarVuelosDesdeBD();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al modificar vuelo: " + ex.Message);
+            }
+            LimpiarCampos();
+        }
+
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                MessageBox.Show("Seleccione un vuelo para eliminar.");
+                return;
+            }
+
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM vuelos WHERE id=@id";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", int.Parse(txtId.Text));
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Vuelo eliminado correctamente.");
+                }
+
+                CargarVuelosDesdeBD();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar vuelo: " + ex.Message);
+            }
+            LimpiarCampos();
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            string filtro = cmbAerolinea.Text.Trim();
+
+            if (string.IsNullOrEmpty(filtro))
+            {
+                CargarVuelosDesdeBD();
+                return;
+            }
+
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = @"SELECT v.id, 
+                                    a.nombre AS Aerolinea, 
+                                    av.modelo AS Avion, 
+                                    CONCAT(r.origen, ' → ', r.destino) AS Ruta,
+                                    v.fecha_salida, v.fecha_llegada,
+                                    v.tarifa_base, v.asientos_disponibles
+                             FROM vuelos v
+                             INNER JOIN aerolineas a ON v.aerolinea_id = a.id
+                             INNER JOIN aviones av ON v.avion_id = av.id
+                             INNER JOIN rutas r ON v.ruta_id = r.id
+                             WHERE a.nombre LIKE @filtro 
+                                OR av.modelo LIKE @filtro
+                                OR r.origen LIKE @filtro 
+                                OR r.destino LIKE @filtro";
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@filtro", "%" + filtro + "%");
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvVuelos.DataSource = dt;
                 }
             }
-
-            private void btnEliminar_Click(object sender, EventArgs e)
+            catch (Exception ex)
             {
-                if (string.IsNullOrWhiteSpace(txtId.Text)) return;
-
-                int id = int.Parse(txtId.Text);
-                listaVuelos.RemoveAll(v => v.Id == id);
-                ActualizarGrid();
-                LimpiarCampos();
+                MessageBox.Show("Error al buscar vuelos: " + ex.Message);
             }
+            LimpiarCampos();
+        }
 
-            private void btnBuscar_Click(object sender, EventArgs e)
-            {
-                string buscar = txtTarifa.Text.Trim();
-                var filtrados = listaVuelos
-                    .Where(v => v.TarifaBase.ToString().Contains(buscar))
-                    .ToList();
-
-                dgvVuelos.DataSource = null;
-                dgvVuelos.DataSource = filtrados;
-            }
 
         private void dgvVuelos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvVuelos.Rows.Count == 0 || e.RowIndex < 0)
-                return;
+            if (e.RowIndex < 0) return; // Evita errores al hacer clic en encabezados
 
             try
             {
-                var fila = dgvVuelos.Rows[e.RowIndex];
-                txtId.Text = fila.Cells["Id"].Value.ToString();
-                txtTarifa.Text = fila.Cells["TarifaBase"].Value.ToString();
-                txtAsientos.Text = fila.Cells["AsientosDisponibles"].Value.ToString();
-                dtpSalida.Value = Convert.ToDateTime(fila.Cells["FechaSalida"].Value);
-                dtpLlegada.Value = Convert.ToDateTime(fila.Cells["FechaLlegada"].Value);
+                DataGridViewRow fila = dgvVuelos.Rows[e.RowIndex];
+
+                txtId.Text = fila.Cells["id"].Value?.ToString() ?? "";
+
+                // Verifica si la columna existe antes de acceder
+                if (fila.DataGridView.Columns.Contains("aerolinea_id"))
+                    cmbAerolinea.SelectedValue = Convert.ToInt32(fila.Cells["aerolinea_id"].Value);
+
+                if (fila.DataGridView.Columns.Contains("avion_id"))
+                    cmbAvion.SelectedValue = Convert.ToInt32(fila.Cells["avion_id"].Value);
+
+                if (fila.DataGridView.Columns.Contains("ruta_id"))
+                    cmbRuta.SelectedValue = Convert.ToInt32(fila.Cells["ruta_id"].Value);
+
+                dtpSalida.Value = Convert.ToDateTime(fila.Cells["fecha_salida"].Value);
+                dtpLlegada.Value = Convert.ToDateTime(fila.Cells["fecha_llegada"].Value);
+                txtTarifa.Text = fila.Cells["tarifa_base"].Value?.ToString() ?? "";
+                txtAsientos.Text = fila.Cells["asientos_disponibles"].Value?.ToString() ?? "";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al seleccionar vuelo: " + ex.Message);
+                MessageBox.Show("Error al cargar los datos del vuelo seleccionado: " + ex.Message);
             }
         }
 
-
-        private void ActualizarGrid()
+        private void LimpiarCampos()
+        {
+            txtId.Clear();
+            txtTarifa.Clear();
+            txtAsientos.Clear();
+            cmbAerolinea.SelectedIndex = -1;
+            cmbAvion.SelectedIndex = -1;
+            cmbRuta.SelectedIndex = -1;
+            dtpSalida.Value = DateTime.Now;
+            dtpLlegada.Value = DateTime.Now;
+        }
+        private void CargarCombosDesdeBD()
         {
             try
             {
-                dgvVuelos.CellClick -= dgvVuelos_CellClick;
-
-                dgvVuelos.DataSource = null;
-
-                if (listaVuelos != null && listaVuelos.Count > 0)
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
                 {
-                    dgvVuelos.DataSource = listaVuelos.ToList();
-                }
+                    conn.Open();
 
-                dgvVuelos.ClearSelection();
+                    //  Aerolíneas
+                    MySqlDataAdapter daAero = new MySqlDataAdapter("SELECT id, nombre FROM aerolineas", conn);
+                    DataTable dtAero = new DataTable();
+                    daAero.Fill(dtAero);
+                    cmbAerolinea.DataSource = dtAero;
+                    cmbAerolinea.DisplayMember = "nombre";
+                    cmbAerolinea.ValueMember = "id";
+
+                    // Aviones
+                    MySqlDataAdapter daAvion = new MySqlDataAdapter("SELECT id, modelo FROM aviones", conn);
+                    DataTable dtAvion = new DataTable();
+                    daAvion.Fill(dtAvion);
+                    cmbAvion.DataSource = dtAvion;
+                    cmbAvion.DisplayMember = "modelo";
+                    cmbAvion.ValueMember = "id";
+
+                    //  Rutas
+                    MySqlDataAdapter daRuta = new MySqlDataAdapter("SELECT id, CONCAT(origen, ' → ', destino) AS descripcion FROM rutas", conn);
+                    DataTable dtRuta = new DataTable();
+                    daRuta.Fill(dtRuta);
+                    cmbRuta.DataSource = dtRuta;
+                    cmbRuta.DisplayMember = "descripcion";
+                    cmbRuta.ValueMember = "id";
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al actualizar la lista de vuelos: " + ex.Message);
-            }
-            finally
-            {
-                dgvVuelos.CellClick += dgvVuelos_CellClick;
+                MessageBox.Show("Error al cargar datos en los combos: " + ex.Message);
             }
         }
 
-
-        private void LimpiarCampos()
+        private void CargarVuelosDesdeBD()
+        {
+            try
             {
-                txtId.Clear();
-                txtTarifa.Clear();
-                txtAsientos.Clear();
-                cmbAerolinea.SelectedIndex = -1;
-                cmbAvion.SelectedIndex = -1;
-                cmbRuta.SelectedIndex = -1;
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"SELECT v.id, 
+                                    v.aerolinea_id, 
+                                    v.avion_id, 
+                                    v.ruta_id,
+                                    v.fecha_salida,
+                                    v.fecha_llegada,
+                                    v.tarifa_base,
+                                    v.asientos_disponibles
+                             FROM vuelos v";
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvVuelos.AutoGenerateColumns = true;
+                    dgvVuelos.DataSource = dt;
+
+                    // Encabezados bonitos
+                    dgvVuelos.Columns["id"].HeaderText = "ID";
+                    dgvVuelos.Columns["aerolinea_id"].HeaderText = "Aerolínea ID";
+                    dgvVuelos.Columns["avion_id"].HeaderText = "Avión ID";
+                    dgvVuelos.Columns["ruta_id"].HeaderText = "Ruta ID";
+                    dgvVuelos.Columns["fecha_salida"].HeaderText = "Fecha Salida";
+                    dgvVuelos.Columns["fecha_llegada"].HeaderText = "Fecha Llegada";
+                    dgvVuelos.Columns["tarifa_base"].HeaderText = "Tarifa Base ($)";
+                    dgvVuelos.Columns["asientos_disponibles"].HeaderText = "Asientos";
+
+                    foreach (DataGridViewColumn col in dgvVuelos.Columns)
+                    {
+                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar vuelos: " + ex.Message);
+            }
+        }
 
     }
 }

@@ -30,36 +30,25 @@ namespace Clave2_Grupo3.Forms
         private void InitializeComponent()
         {
             this.lblBienvenida = new System.Windows.Forms.Label();
-            this.btnUsuarios = new System.Windows.Forms.Button();
             this.btnCerrarSesion = new System.Windows.Forms.Button();
             this.btnVuelos = new System.Windows.Forms.Button();
             this.btnReservas = new System.Windows.Forms.Button();
             this.btnPagos = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnUsuarios = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBienvenida
             // 
             this.lblBienvenida.AutoSize = true;
-            this.lblBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBienvenida.Location = new System.Drawing.Point(46, 53);
+            this.lblBienvenida.Font = new System.Drawing.Font("Maiandra GD", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBienvenida.Location = new System.Drawing.Point(46, 49);
             this.lblBienvenida.Name = "lblBienvenida";
-            this.lblBienvenida.Size = new System.Drawing.Size(168, 32);
+            this.lblBienvenida.Size = new System.Drawing.Size(163, 34);
             this.lblBienvenida.TabIndex = 0;
             this.lblBienvenida.Text = "Bienvenido";
-            // 
-            // btnUsuarios
-            // 
-            this.btnUsuarios.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUsuarios.Location = new System.Drawing.Point(395, 235);
-            this.btnUsuarios.Name = "btnUsuarios";
-            this.btnUsuarios.Size = new System.Drawing.Size(187, 57);
-            this.btnUsuarios.TabIndex = 1;
-            this.btnUsuarios.Text = "Administrar Usuarios";
-            this.btnUsuarios.UseVisualStyleBackColor = true;
-            this.btnUsuarios.Click += new System.EventHandler(this.btnUsuarios_Click);
             // 
             // btnCerrarSesion
             // 
@@ -108,12 +97,12 @@ namespace Clave2_Grupo3.Forms
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SeaShell;
+            this.groupBox1.Controls.Add(this.btnUsuarios);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnPagos);
             this.groupBox1.Controls.Add(this.btnReservas);
             this.groupBox1.Controls.Add(this.btnVuelos);
             this.groupBox1.Controls.Add(this.btnCerrarSesion);
-            this.groupBox1.Controls.Add(this.btnUsuarios);
             this.groupBox1.Controls.Add(this.lblBienvenida);
             this.groupBox1.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
             this.groupBox1.Location = new System.Drawing.Point(67, 53);
@@ -131,6 +120,17 @@ namespace Clave2_Grupo3.Forms
             this.label1.Size = new System.Drawing.Size(392, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "Utilice el menú para acceder a los distintos módulos.";
+            // 
+            // btnUsuarios
+            // 
+            this.btnUsuarios.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUsuarios.Location = new System.Drawing.Point(395, 235);
+            this.btnUsuarios.Name = "btnUsuarios";
+            this.btnUsuarios.Size = new System.Drawing.Size(187, 57);
+            this.btnUsuarios.TabIndex = 7;
+            this.btnUsuarios.Text = "Administrar Usuarios";
+            this.btnUsuarios.UseVisualStyleBackColor = true;
+            this.btnUsuarios.Click += new System.EventHandler(this.btnUsuarios_Click);
             // 
             // MainForm
             // 
@@ -151,12 +151,12 @@ namespace Clave2_Grupo3.Forms
         #endregion
 
         private System.Windows.Forms.Label lblBienvenida;
-        private System.Windows.Forms.Button btnUsuarios;
         private System.Windows.Forms.Button btnCerrarSesion;
         private System.Windows.Forms.Button btnVuelos;
         private System.Windows.Forms.Button btnReservas;
         private System.Windows.Forms.Button btnPagos;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnUsuarios;
     }
 }

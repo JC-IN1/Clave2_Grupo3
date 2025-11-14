@@ -1,28 +1,21 @@
 ﻿using System;
-using Clave2_Grupo3.Models;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+using Clave2_Grupo3.Models;
+using Clave2_Grupo3.Conexion;
 
 namespace Clave2_Grupo3.Forms
 {
     public partial class ReservasForm : Form
     {
-        private List<Reserva> listaReservas = new List<Reserva>();
-        private List<Vuelo> listaVuelos = new List<Vuelo>();
-        private List<Pasajero> listaPasajeros = new List<Pasajero>();
-        private int siguienteId = 1;
-        private Usuario usuarioActual;
-
         public ReservasForm()
         {
             InitializeComponent();
         }
+        private Usuario usuarioActual;
 
         public ReservasForm(Usuario usuario)
         {
@@ -34,51 +27,9 @@ namespace Clave2_Grupo3.Forms
         {
             try
             {
-                // 🔹 Simular vuelos y pasajeros existentes
-                listaVuelos.Add(new Vuelo { Id = 1, TarifaBase = 250, AsientosDisponibles = 30 });
-                listaVuelos.Add(new Vuelo { Id = 2, TarifaBase = 400, AsientosDisponibles = 20 });
-
-                listaPasajeros.Add(new Pasajero { Id = 1, Nombre = "Juan Pérez" });
-                listaPasajeros.Add(new Pasajero { Id = 2, Nombre = "María López" });
-
-                if (usuarioActual != null && usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
-                {
-                    // El cliente solo puede verse a sí mismo
-                    var filtrados = listaPasajeros
-                        .Where(p => p.Nombre.IndexOf(usuarioActual.NombreUsuario, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .ToList();
-
-                    if (filtrados.Count == 0)
-                    {
-                        var clientePasajero = new Pasajero
-                        {
-                            Id = listaPasajeros.Count + 1,
-                            Nombre = usuarioActual.NombreUsuario
-                        };
-                        listaPasajeros.Add(clientePasajero);
-                        filtrados.Add(clientePasajero);
-                    }
-
-                    cmbPasajero.DataSource = filtrados;
-                }
-                else
-                {
-                    // Admin y operador pueden ver todos
-                    cmbPasajero.DataSource = listaPasajeros;
-                }
-
-                cmbPasajero.DisplayMember = "Nombre";
-                cmbPasajero.ValueMember = "Id";
-
-                cmbVuelo.DataSource = listaVuelos;
-                cmbVuelo.DisplayMember = "Id";
-                cmbVuelo.ValueMember = "Id";
-
-                cmbEstado.Items.Clear();
-                cmbEstado.Items.AddRange(new string[] { "Activa", "Cancelada" });
-                cmbEstado.SelectedIndex = 0;
-
-                ActualizarGrid();
+                CargarCombosDesdeBD();
+                CargarReservasDesdeBD();
+                CargarPasajerosDesdeUsuarios();
             }
             catch (Exception ex)
             {
@@ -86,191 +37,535 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-        private void btnCalcular_Click(object sender, EventArgs e)
+        // 🔹 Cargar combos desde la base
+        private void CargarCombosDesdeBD()
         {
-            if (cmbVuelo.SelectedItem == null)
+            try
             {
-                MessageBox.Show("Debe seleccionar un vuelo antes de calcular el precio.");
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    // 🔹 Cargar vuelos
+                    MySqlDataAdapter daVuelos = new MySqlDataAdapter(
+                        "SELECT id, CONCAT('Vuelo ', id) AS descripcion FROM vuelos", conn);
+                    DataTable dtVuelos = new DataTable();
+                    daVuelos.Fill(dtVuelos);
+                    cmbVuelo.DataSource = dtVuelos;
+                    cmbVuelo.DisplayMember = "descripcion";
+                    cmbVuelo.ValueMember = "id";
+
+                    CargarPasajerosDesdeUsuarios();
+
+
+                    cmbEstado.Items.Clear();
+                    cmbEstado.Items.AddRange(new string[] { "Activa", "Pagada", "Cancelada" });
+                    cmbEstado.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar combos: " + ex.Message);
+            }
+        }
+        private void CargarPasajerosDesdeUsuarios()
+        {
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = @"SELECT id, nombre_usuario 
+                             FROM usuarios 
+                             WHERE rol = 'Cliente'";
+
+                    // Si es cliente, solo cargar SU propio registro
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query += " AND nombre_usuario = @nombre";
+                    }
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        cmd.Parameters.AddWithValue("@nombre", usuarioActual.NombreUsuario);
+                    }
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    cmbPasajero.DataSource = dt;
+                    cmbPasajero.DisplayMember = "nombre_usuario";  // lo que se muestra
+                    cmbPasajero.ValueMember = "id";                // id del usuario
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar pasajeros desde usuarios: " + ex.Message);
+            }
+        }
+
+        private void btnCalcular_Click(object sender, EventArgs e) //Metodo para boton Calcular Precio 
+        {
+            if (cmbVuelo.SelectedValue == null) //Validacion de entrada de datos
+            {
+                MessageBox.Show("Seleccione un vuelo para calcular el precio.");
                 return;
             }
 
-            var vuelo = (Vuelo)cmbVuelo.SelectedItem;
-            decimal total = vuelo.TarifaBase;
+            try
+            {
+                int vueloId = Convert.ToInt32(cmbVuelo.SelectedValue);
+                decimal tarifaBase = 0m;
 
-            if (chkEquipajeBodega.Checked)
-                total += 40;
-            if (chkEquipajeMano.Checked)
-                total += 15;
+                // Obtener tarifa_base desde la BD
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"SELECT v.tarifa_base, 
+                                    a.nombre AS Aerolinea,
+                                    CONCAT(r.origen, ' → ', r.destino) AS Ruta,
+                                    av.modelo AS Avion
+                             FROM vuelos v
+                             INNER JOIN aerolineas a ON v.aerolinea_id = a.id
+                             INNER JOIN aviones av ON v.avion_id = av.id
+                             INNER JOIN rutas r ON v.ruta_id = r.id
+                             WHERE v.id = @id";
 
-            txtPrecio.Text = total.ToString("F2");
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", vueloId);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                tarifaBase = Convert.ToDecimal(reader["tarifa_base"]);
+                                lblDetalleVuelo.Text = $"{reader["Aerolinea"]} | {reader["Ruta"]} | {reader["Avion"]}";
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se encontró el vuelo seleccionado.");
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // 🔹 Calcular recargos según equipaje
+                decimal total = tarifaBase;
+                string detalleEquipaje = "";
+
+                if (chkEquipajeMano.Checked)
+                {
+                    total += tarifaBase * 0.10m; // +10%
+                    detalleEquipaje += "Con equipaje de mano (+10%)";
+                }
+
+                if (chkEquipajeBodega.Checked)
+                {
+                    total += tarifaBase * 0.20m; // +20%
+                    detalleEquipaje += (detalleEquipaje != "" ? " y " : "") + "con equipaje en bodega (+20%)";
+                }
+
+                // 🔹 Mostrar resultado
+                txtPrecio.Text = total.ToString("F2");
+
+                MessageBox.Show(
+                    $"Vuelo seleccionado: {lblDetalleVuelo.Text}\n" +
+                    $"{detalleEquipaje}\n" +
+                    $"Precio total: ${total:F2}",
+                    "Resumen de Reserva",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al calcular precio: " + ex.Message);
+            }
+        }
+        private void CargarReservasDesdeBD()
+        {
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = @"
+                SELECT r.id,
+                       u.nombre_usuario AS Pasajero,
+                       CONCAT('Vuelo ', v.id) AS Vuelo,
+                       r.fecha_reserva,
+                       r.precio_total,
+                       r.estado,
+                       r.equipaje_mano,
+                       r.equipaje_bodega,
+                       r.preferencia_asiento
+                FROM reservas r
+                INNER JOIN usuarios u ON r.pasajero_id = u.id
+                INNER JOIN vuelos v ON r.vuelo_id = v.id
+            ";
+
+                    // Si es cliente, mostrar solo sus reservas
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query += " WHERE u.nombre_usuario = @cliente";
+                    }
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        cmd.Parameters.AddWithValue("@cliente", usuarioActual.NombreUsuario);
+                    }
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvReservas.DataSource = dt;
+
+                    // Alinear encabezados
+                    foreach (DataGridViewColumn col in dgvReservas.Columns)
+                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar reservas: " + ex.Message);
+            }
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (cmbVuelo.SelectedItem == null || cmbPasajero.SelectedItem == null)
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
                 {
-                    MessageBox.Show("Debe seleccionar un vuelo y un pasajero.");
-                    return;
+                    conn.Open();
+
+                    int vueloId = Convert.ToInt32(cmbVuelo.SelectedValue);
+                    int pasajeroId = 0;
+
+                    // 🧩 Verificar asientos disponibles
+                    int asientosDisponibles = 0;
+                    string queryAsientos = "SELECT asientos_disponibles FROM vuelos WHERE id = @id";
+                    using (MySqlCommand cmdAsientos = new MySqlCommand(queryAsientos, conn))
+                    {
+                        cmdAsientos.Parameters.AddWithValue("@id", vueloId);
+                        object result = cmdAsientos.ExecuteScalar();
+                        if (result != null)
+                            asientosDisponibles = Convert.ToInt32(result);
+                    }
+
+                    if (asientosDisponibles <= 0)
+                    {
+                        MessageBox.Show("❌ No hay asientos disponibles para este vuelo.",
+                            "Sin cupo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Si el usuario es CLIENTE, buscar o crear su pasajero
+                    if (usuarioActual != null && usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string queryPasajero = "SELECT id FROM pasajeros WHERE nombre = @nombre LIMIT 1";
+                        using (MySqlCommand cmdP = new MySqlCommand(queryPasajero, conn))
+                        {
+                            cmdP.Parameters.AddWithValue("@nombre", usuarioActual.NombreUsuario);
+                            object idEncontrado = cmdP.ExecuteScalar();
+
+                            if (idEncontrado != null)
+                            {
+                                pasajeroId = Convert.ToInt32(idEncontrado);
+                            }
+                            else
+                            {
+                                // Crear nuevo pasajero si no existe
+                                string insertPasajero = "INSERT INTO pasajeros (nombre) VALUES (@nombre)";
+                                using (MySqlCommand cmdInsert = new MySqlCommand(insertPasajero, conn))
+                                {
+                                    cmdInsert.Parameters.AddWithValue("@nombre", usuarioActual.NombreUsuario);
+                                    cmdInsert.ExecuteNonQuery();
+                                    pasajeroId = (int)cmdInsert.LastInsertedId;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        pasajeroId = Convert.ToInt32(cmbPasajero.SelectedValue);
+                    }
+
+                    // 🧮 Validar precio antes de guardar
+                    if (string.IsNullOrWhiteSpace(txtPrecio.Text))
+                    {
+                        MessageBox.Show("Debe calcular el precio antes de guardar la reserva.");
+                        return;
+                    }
+
+                    decimal precio = decimal.Parse(txtPrecio.Text);
+
+                    // 💾 Insertar reserva
+                    string queryReserva = @"INSERT INTO reservas 
+                (vuelo_id, pasajero_id, fecha_reserva, precio_total, estado, equipaje_mano, equipaje_bodega, preferencia_asiento)
+                VALUES (@vuelo, @pasajero, NOW(), @precio, @estado, @mano, @bodega, @asiento)";
+
+                    using (MySqlCommand cmdReserva = new MySqlCommand(queryReserva, conn))
+                    {
+                        cmdReserva.Parameters.AddWithValue("@vuelo", vueloId);
+                        cmdReserva.Parameters.AddWithValue("@pasajero", pasajeroId);
+                        cmdReserva.Parameters.AddWithValue("@precio", precio);
+                        cmdReserva.Parameters.AddWithValue("@estado", cmbEstado.Text);
+                        cmdReserva.Parameters.AddWithValue("@mano", chkEquipajeMano.Checked);
+                        cmdReserva.Parameters.AddWithValue("@bodega", chkEquipajeBodega.Checked);
+                        cmdReserva.Parameters.AddWithValue("@asiento", txtAsiento.Text);
+
+                        cmdReserva.ExecuteNonQuery();
+                    }
+
+                    // 🔄 Restar un asiento disponible
+                    string queryActualizar = "UPDATE vuelos SET asientos_disponibles = asientos_disponibles - 1 WHERE id = @id";
+                    using (MySqlCommand cmdUpdate = new MySqlCommand(queryActualizar, conn))
+                    {
+                        cmdUpdate.Parameters.AddWithValue("@id", vueloId);
+                        cmdUpdate.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("✅ Reserva agregada correctamente. Asiento confirmado.",
+                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                if (string.IsNullOrWhiteSpace(txtPrecio.Text))
-                {
-                    MessageBox.Show("Debe calcular el precio antes de guardar.");
-                    return;
-                }
-
-                var nueva = new Reserva
-                {
-                    Id = siguienteId++,
-                    VueloId = ((Vuelo)cmbVuelo.SelectedItem).Id,
-                    PasajeroId = ((Pasajero)cmbPasajero.SelectedItem).Id,
-                    FechaReserva = DateTime.Now,
-                    PrecioTotal = decimal.Parse(txtPrecio.Text),
-                    Estado = cmbEstado.SelectedItem?.ToString() ?? "Activa",
-                    EquipajeMano = chkEquipajeMano.Checked,
-                    EquipajeBodega = chkEquipajeBodega.Checked,
-                    PreferenciaAsiento = txtAsiento.Text
-                };
-
-                listaReservas.Add(nueva);
-                ActualizarGrid();
+                // 🔁 Refrescar datos
+                CargarReservasDesdeBD();
                 LimpiarCampos();
-                MessageBox.Show("Reserva registrada correctamente.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar la reserva: " + ex.Message);
+                MessageBox.Show("Error al guardar la reserva: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            LimpiarCampos();
         }
 
+
+        // 🔹 Modificar
         private void btnModificar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
             {
-                MessageBox.Show("Debe seleccionar una reserva para modificar.");
-                return;
-            }
-
-            int id = int.Parse(txtId.Text);
-            var reserva = listaReservas.FirstOrDefault(r => r.Id == id);
-
-            if (reserva == null)
-            {
-                MessageBox.Show("No se encontró la reserva seleccionada.");
-                return;
-            }
-
-            if (cmbVuelo.SelectedItem == null || cmbPasajero.SelectedItem == null)
-            {
-                MessageBox.Show("Debe seleccionar un vuelo y un pasajero válidos.");
+                MessageBox.Show("Seleccione una reserva para modificar.");
                 return;
             }
 
             try
             {
-                reserva.VueloId = ((Vuelo)cmbVuelo.SelectedItem).Id;
-                reserva.PasajeroId = ((Pasajero)cmbPasajero.SelectedItem).Id;
-                reserva.EquipajeMano = chkEquipajeMano.Checked;
-                reserva.EquipajeBodega = chkEquipajeBodega.Checked;
-                reserva.PreferenciaAsiento = txtAsiento.Text;
-                reserva.Estado = cmbEstado.SelectedItem?.ToString() ?? "Activa";
-                reserva.PrecioTotal = decimal.TryParse(txtPrecio.Text, out decimal total) ? total : 0;
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"UPDATE reservas SET 
+                                        vuelo_id=@vuelo, pasajero_id=@pasajero, 
+                                        precio_total=@precio, estado=@estado, 
+                                        equipaje_mano=@mano, equipaje_bodega=@bodega, 
+                                        preferencia_asiento=@asiento
+                                     WHERE id=@id";
 
-                ActualizarGrid();
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@vuelo", cmbVuelo.SelectedValue);
+                    cmd.Parameters.AddWithValue("@pasajero", cmbPasajero.SelectedValue);
+                    cmd.Parameters.AddWithValue("@precio", decimal.Parse(txtPrecio.Text));
+                    cmd.Parameters.AddWithValue("@estado", cmbEstado.Text);
+                    cmd.Parameters.AddWithValue("@mano", chkEquipajeMano.Checked);
+                    cmd.Parameters.AddWithValue("@bodega", chkEquipajeBodega.Checked);
+                    cmd.Parameters.AddWithValue("@asiento", txtAsiento.Text);
+                    cmd.Parameters.AddWithValue("@id", int.Parse(txtId.Text));
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Reserva modificada correctamente.");
+                }
+
+                CargarReservasDesdeBD();
                 LimpiarCampos();
-                MessageBox.Show("Reserva modificada correctamente.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al modificar reserva: " + ex.Message);
             }
+            LimpiarCampos();
         }
 
+        // Eliminar
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
             {
-                MessageBox.Show("Debe seleccionar una reserva para eliminar.");
+                MessageBox.Show("Seleccione una reserva para eliminar.");
                 return;
             }
 
-            int id = int.Parse(txtId.Text);
-            listaReservas.RemoveAll(r => r.Id == id);
-            ActualizarGrid();
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM reservas WHERE id=@id";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", int.Parse(txtId.Text));
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Reserva eliminada correctamente.");
+                }
+
+                CargarReservasDesdeBD();
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar reserva: " + ex.Message);
+            }
             LimpiarCampos();
-            MessageBox.Show("Reserva eliminada correctamente.");
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = @"
+                SELECT r.id,
+                       u.nombre_usuario AS Pasajero,
+                       CONCAT('Vuelo ', v.id) AS Vuelo,
+                       r.fecha_reserva,
+                       r.precio_total,
+                       r.estado,
+                       r.equipaje_mano,
+                       r.equipaje_bodega,
+                       r.preferencia_asiento
+                FROM reservas r
+                INNER JOIN usuarios u ON r.pasajero_id = u.id
+                INNER JOIN vuelos v ON r.vuelo_id = v.id
+                WHERE 1 = 1
+            ";
+
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = conn;
+
+                        // --- filtro por pasajero (nombre parcial) ---
+                        if (!string.IsNullOrWhiteSpace(cmbPasajero.Text))
+                        {
+                            query += " AND u.nombre_usuario LIKE @pasajero";
+                            cmd.Parameters.AddWithValue("@pasajero", "%" + cmbPasajero.Text.Trim() + "%");
+                        }
+
+                        // --- filtro por estado (si hay una selección en el combo) ---
+                        if (cmbEstado.SelectedIndex != -1 && !string.IsNullOrWhiteSpace(cmbEstado.Text))
+                        {
+                            query += " AND r.estado = @estado";
+                            cmd.Parameters.AddWithValue("@estado", cmbEstado.Text.Trim());
+                        }
+
+                        cmd.CommandText = query;
+
+                        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        dgvReservas.DataSource = dt;
+
+                        // centrar encabezados si quieres
+                        foreach (DataGridViewColumn col in dgvReservas.Columns)
+                            col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar reservas: " + ex.Message);
+            }
         }
 
         private void dgvReservas_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // evita el error
             if (e.RowIndex < 0) return;
 
             try
             {
                 var fila = dgvReservas.Rows[e.RowIndex];
 
-                txtId.Text = fila.Cells["Id"].Value.ToString();
-                txtPrecio.Text = fila.Cells["PrecioTotal"].Value.ToString();
-                cmbEstado.SelectedItem = fila.Cells["Estado"].Value.ToString();
+                // ID
+                txtId.Text = fila.Cells["id"].Value?.ToString();
 
-                // Validaciones seguras
-                chkEquipajeMano.Checked = fila.Cells["EquipajeMano"].Value is bool mano && mano;
-                chkEquipajeBodega.Checked = fila.Cells["EquipajeBodega"].Value is bool bodega && bodega;
-                txtAsiento.Text = fila.Cells["PreferenciaAsiento"].Value?.ToString() ?? "";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al seleccionar la fila: " + ex.Message);
-            }
-        }
-
-
-        private void ActualizarGrid()
-        {
-            try
-            {
-                // Desactivar temporalmente los eventos del DataGridView
-                dgvReservas.CellClick -= dgvReservas_CellClick;
-
-                dgvReservas.DataSource = null;
-
-                if (listaReservas != null && listaReservas.Count > 0)
+                // PASAJERO (por nombre)
+                string pasajeroNombre = fila.Cells["Pasajero"].Value?.ToString();
+                if (!string.IsNullOrEmpty(pasajeroNombre))
                 {
-                    dgvReservas.DataSource = listaReservas.ToList();
+                    cmbPasajero.Text = pasajeroNombre;
                 }
 
-                dgvReservas.ClearSelection();
+                // VUELO ("Vuelo X" → obtener X)
+                string vueloTexto = fila.Cells["Vuelo"].Value?.ToString();
+                if (!string.IsNullOrEmpty(vueloTexto))
+                {
+                    // Extraer número del vuelo
+                    int vueloId = int.Parse(vueloTexto.Replace("Vuelo ", "").Trim());
+                    cmbVuelo.SelectedValue = vueloId;
+                }
+
+                // PRECIO
+                txtPrecio.Text = fila.Cells["precio_total"].Value?.ToString();
+
+                // ESTADO
+                cmbEstado.Text = fila.Cells["estado"].Value?.ToString();
+
+                // EQUIPAJES
+                chkEquipajeMano.Checked =
+                    fila.Cells["equipaje_mano"].Value != DBNull.Value &&
+                    Convert.ToBoolean(fila.Cells["equipaje_mano"].Value);
+
+                chkEquipajeBodega.Checked =
+                    fila.Cells["equipaje_bodega"].Value != DBNull.Value &&
+                    Convert.ToBoolean(fila.Cells["equipaje_bodega"].Value);
+
+                // ASIENTO
+                txtAsiento.Text = fila.Cells["preferencia_asiento"].Value?.ToString();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al actualizar el grid: " + ex.Message);
-            }
-            finally
-            {
-                // Volver a activar el evento después de actualizar
-                dgvReservas.CellClick += dgvReservas_CellClick;
+                MessageBox.Show("Error al cargar la reserva seleccionada: " + ex.Message);
             }
         }
 
 
+
+        // 🔹 Limpiar campos
         private void LimpiarCampos()
         {
             txtId.Clear();
             txtAsiento.Clear();
             txtPrecio.Clear();
+            cmbVuelo.SelectedIndex = -1;
+            cmbPasajero.SelectedIndex = -1;
+            cmbEstado.SelectedIndex = 0;
             chkEquipajeMano.Checked = false;
             chkEquipajeBodega.Checked = false;
-
-            if (cmbEstado.Items.Count > 0)
-                cmbEstado.SelectedIndex = 0;
-        }
-
-        private void lblReserva_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

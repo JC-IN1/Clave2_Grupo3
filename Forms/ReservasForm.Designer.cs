@@ -52,6 +52,7 @@ namespace Clave2_Grupo3.Forms
             this.dgvReservas = new System.Windows.Forms.DataGridView();
             this.lblReserva = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblDetalleVuelo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReservas)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -188,7 +189,7 @@ namespace Clave2_Grupo3.Forms
             // btnCalcular
             // 
             this.btnCalcular.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCalcular.Location = new System.Drawing.Point(16, 537);
+            this.btnCalcular.Location = new System.Drawing.Point(22, 583);
             this.btnCalcular.Name = "btnCalcular";
             this.btnCalcular.Size = new System.Drawing.Size(109, 58);
             this.btnCalcular.TabIndex = 14;
@@ -199,7 +200,7 @@ namespace Clave2_Grupo3.Forms
             // btnGuardar
             // 
             this.btnGuardar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGuardar.Location = new System.Drawing.Point(140, 537);
+            this.btnGuardar.Location = new System.Drawing.Point(146, 583);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(103, 58);
             this.btnGuardar.TabIndex = 15;
@@ -210,7 +211,7 @@ namespace Clave2_Grupo3.Forms
             // btnModificar
             // 
             this.btnModificar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnModificar.Location = new System.Drawing.Point(260, 537);
+            this.btnModificar.Location = new System.Drawing.Point(266, 583);
             this.btnModificar.Name = "btnModificar";
             this.btnModificar.Size = new System.Drawing.Size(119, 58);
             this.btnModificar.TabIndex = 16;
@@ -221,7 +222,7 @@ namespace Clave2_Grupo3.Forms
             // btnEliminar
             // 
             this.btnEliminar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminar.Location = new System.Drawing.Point(396, 537);
+            this.btnEliminar.Location = new System.Drawing.Point(402, 583);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(106, 58);
             this.btnEliminar.TabIndex = 17;
@@ -232,12 +233,13 @@ namespace Clave2_Grupo3.Forms
             // btnBuscar
             // 
             this.btnBuscar.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBuscar.Location = new System.Drawing.Point(510, 537);
+            this.btnBuscar.Location = new System.Drawing.Point(516, 583);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(95, 58);
             this.btnBuscar.TabIndex = 18;
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
             // dgvReservas
             // 
@@ -270,11 +272,11 @@ namespace Clave2_Grupo3.Forms
             this.lblReserva.Size = new System.Drawing.Size(128, 34);
             this.lblReserva.TabIndex = 20;
             this.lblReserva.Text = "Reservas";
-            this.lblReserva.Click += new System.EventHandler(this.lblReserva_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SeaShell;
+            this.groupBox1.Controls.Add(this.lblDetalleVuelo);
             this.groupBox1.Controls.Add(this.lblReserva);
             this.groupBox1.Controls.Add(this.dgvReservas);
             this.groupBox1.Controls.Add(this.btnBuscar);
@@ -303,6 +305,15 @@ namespace Clave2_Grupo3.Forms
             this.groupBox1.TabIndex = 21;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Gestionar Reservas";
+            // 
+            // lblDetalleVuelo
+            // 
+            this.lblDetalleVuelo.AutoSize = true;
+            this.lblDetalleVuelo.Location = new System.Drawing.Point(101, 520);
+            this.lblDetalleVuelo.Name = "lblDetalleVuelo";
+            this.lblDetalleVuelo.Size = new System.Drawing.Size(133, 20);
+            this.lblDetalleVuelo.TabIndex = 21;
+            this.lblDetalleVuelo.Text = "Detalle del Vuelo";
             // 
             // ReservasForm
             // 
@@ -345,5 +356,6 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.DataGridView dgvReservas;
         private System.Windows.Forms.Label lblReserva;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lblDetalleVuelo;
     }
 }

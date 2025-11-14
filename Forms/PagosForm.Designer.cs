@@ -57,7 +57,7 @@ namespace Clave2_Grupo3.Forms
             // 
             this.lblId.AutoSize = true;
             this.lblId.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblId.Location = new System.Drawing.Point(88, 146);
+            this.lblId.Location = new System.Drawing.Point(75, 144);
             this.lblId.Name = "lblId";
             this.lblId.Size = new System.Drawing.Size(26, 20);
             this.lblId.TabIndex = 0;
@@ -67,7 +67,7 @@ namespace Clave2_Grupo3.Forms
             // 
             this.lblReserva.AutoSize = true;
             this.lblReserva.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReserva.Location = new System.Drawing.Point(58, 206);
+            this.lblReserva.Location = new System.Drawing.Point(45, 204);
             this.lblReserva.Name = "lblReserva";
             this.lblReserva.Size = new System.Drawing.Size(72, 20);
             this.lblReserva.TabIndex = 1;
@@ -77,7 +77,7 @@ namespace Clave2_Grupo3.Forms
             // 
             this.lblFecha.AutoSize = true;
             this.lblFecha.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFecha.Location = new System.Drawing.Point(41, 264);
+            this.lblFecha.Location = new System.Drawing.Point(28, 262);
             this.lblFecha.Name = "lblFecha";
             this.lblFecha.Size = new System.Drawing.Size(127, 20);
             this.lblFecha.TabIndex = 2;
@@ -85,32 +85,32 @@ namespace Clave2_Grupo3.Forms
             // 
             // txtId
             // 
-            this.txtId.Location = new System.Drawing.Point(208, 141);
+            this.txtId.Location = new System.Drawing.Point(208, 143);
             this.txtId.Name = "txtId";
             this.txtId.ReadOnly = true;
-            this.txtId.Size = new System.Drawing.Size(195, 28);
+            this.txtId.Size = new System.Drawing.Size(221, 28);
             this.txtId.TabIndex = 3;
             // 
             // cmbReserva
             // 
             this.cmbReserva.FormattingEnabled = true;
-            this.cmbReserva.Location = new System.Drawing.Point(208, 199);
+            this.cmbReserva.Location = new System.Drawing.Point(208, 201);
             this.cmbReserva.Name = "cmbReserva";
-            this.cmbReserva.Size = new System.Drawing.Size(216, 28);
+            this.cmbReserva.Size = new System.Drawing.Size(321, 28);
             this.cmbReserva.TabIndex = 4;
             // 
             // dtpFecha
             // 
-            this.dtpFecha.Location = new System.Drawing.Point(208, 264);
+            this.dtpFecha.Location = new System.Drawing.Point(208, 266);
             this.dtpFecha.Name = "dtpFecha";
-            this.dtpFecha.Size = new System.Drawing.Size(295, 28);
+            this.dtpFecha.Size = new System.Drawing.Size(321, 28);
             this.dtpFecha.TabIndex = 5;
             // 
             // lblMonto
             // 
             this.lblMonto.AutoSize = true;
             this.lblMonto.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMonto.Location = new System.Drawing.Point(72, 333);
+            this.lblMonto.Location = new System.Drawing.Point(59, 331);
             this.lblMonto.Name = "lblMonto";
             this.lblMonto.Size = new System.Drawing.Size(66, 20);
             this.lblMonto.TabIndex = 6;
@@ -118,16 +118,16 @@ namespace Clave2_Grupo3.Forms
             // 
             // txtMonto
             // 
-            this.txtMonto.Location = new System.Drawing.Point(208, 328);
+            this.txtMonto.Location = new System.Drawing.Point(208, 330);
             this.txtMonto.Name = "txtMonto";
-            this.txtMonto.Size = new System.Drawing.Size(195, 28);
+            this.txtMonto.Size = new System.Drawing.Size(221, 28);
             this.txtMonto.TabIndex = 7;
             // 
             // lblMetodo
             // 
             this.lblMetodo.AutoSize = true;
             this.lblMetodo.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetodo.Location = new System.Drawing.Point(41, 400);
+            this.lblMetodo.Location = new System.Drawing.Point(28, 398);
             this.lblMetodo.Name = "lblMetodo";
             this.lblMetodo.Size = new System.Drawing.Size(147, 20);
             this.lblMetodo.TabIndex = 8;
@@ -136,16 +136,16 @@ namespace Clave2_Grupo3.Forms
             // cmbMetodo
             // 
             this.cmbMetodo.FormattingEnabled = true;
-            this.cmbMetodo.Location = new System.Drawing.Point(208, 393);
+            this.cmbMetodo.Location = new System.Drawing.Point(208, 395);
             this.cmbMetodo.Name = "cmbMetodo";
-            this.cmbMetodo.Size = new System.Drawing.Size(216, 28);
+            this.cmbMetodo.Size = new System.Drawing.Size(242, 28);
             this.cmbMetodo.TabIndex = 9;
             // 
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
             this.lblEstado.Font = new System.Drawing.Font("Maiandra GD", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEstado.Location = new System.Drawing.Point(67, 471);
+            this.lblEstado.Location = new System.Drawing.Point(54, 469);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(64, 20);
             this.lblEstado.TabIndex = 10;
@@ -154,9 +154,9 @@ namespace Clave2_Grupo3.Forms
             // cmbEstado
             // 
             this.cmbEstado.FormattingEnabled = true;
-            this.cmbEstado.Location = new System.Drawing.Point(208, 464);
+            this.cmbEstado.Location = new System.Drawing.Point(208, 466);
             this.cmbEstado.Name = "cmbEstado";
-            this.cmbEstado.Size = new System.Drawing.Size(216, 28);
+            this.cmbEstado.Size = new System.Drawing.Size(242, 28);
             this.cmbEstado.TabIndex = 11;
             // 
             // btnRegistrar
@@ -217,11 +217,11 @@ namespace Clave2_Grupo3.Forms
             this.dgvPagos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvPagos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPagos.GridColor = System.Drawing.Color.Black;
-            this.dgvPagos.Location = new System.Drawing.Point(525, 56);
+            this.dgvPagos.Location = new System.Drawing.Point(553, 56);
             this.dgvPagos.Name = "dgvPagos";
             this.dgvPagos.RowHeadersWidth = 51;
             this.dgvPagos.RowTemplate.Height = 24;
-            this.dgvPagos.Size = new System.Drawing.Size(1026, 535);
+            this.dgvPagos.Size = new System.Drawing.Size(1050, 581);
             this.dgvPagos.TabIndex = 16;
             this.dgvPagos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPagos_CellClick);
             // 
@@ -257,9 +257,9 @@ namespace Clave2_Grupo3.Forms
             this.groupBox1.Controls.Add(this.lblReserva);
             this.groupBox1.Controls.Add(this.lblId);
             this.groupBox1.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
-            this.groupBox1.Location = new System.Drawing.Point(42, 35);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1590, 649);
+            this.groupBox1.Size = new System.Drawing.Size(1637, 677);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Gestionar Pagos";

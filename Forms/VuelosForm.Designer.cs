@@ -29,7 +29,6 @@ namespace Clave2_Grupo3.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblId = new System.Windows.Forms.Label();
             this.txtId = new System.Windows.Forms.TextBox();
             this.lblAerolinea = new System.Windows.Forms.Label();
@@ -50,11 +49,11 @@ namespace Clave2_Grupo3.Forms
             this.btnModificar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
             this.btnBuscar = new System.Windows.Forms.Button();
-            this.dgvVuelos = new System.Windows.Forms.DataGridView();
             this.lblVuelos = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVuelos)).BeginInit();
+            this.dgvVuelos = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVuelos)).BeginInit();
             this.SuspendLayout();
             // 
             // lblId
@@ -241,28 +240,6 @@ namespace Clave2_Grupo3.Forms
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
-            // dgvVuelos
-            // 
-            this.dgvVuelos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
-            this.dgvVuelos.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVuelos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvVuelos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVuelos.GridColor = System.Drawing.Color.Black;
-            this.dgvVuelos.Location = new System.Drawing.Point(578, 32);
-            this.dgvVuelos.Name = "dgvVuelos";
-            this.dgvVuelos.RowHeadersWidth = 51;
-            this.dgvVuelos.RowTemplate.Height = 24;
-            this.dgvVuelos.Size = new System.Drawing.Size(1042, 653);
-            this.dgvVuelos.TabIndex = 20;
-            this.dgvVuelos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVuelos_CellClick);
-            // 
             // lblVuelos
             // 
             this.lblVuelos.AutoSize = true;
@@ -276,8 +253,8 @@ namespace Clave2_Grupo3.Forms
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SeaShell;
-            this.groupBox1.Controls.Add(this.lblVuelos);
             this.groupBox1.Controls.Add(this.dgvVuelos);
+            this.groupBox1.Controls.Add(this.lblVuelos);
             this.groupBox1.Controls.Add(this.btnBuscar);
             this.groupBox1.Controls.Add(this.btnEliminar);
             this.groupBox1.Controls.Add(this.btnModificar);
@@ -301,24 +278,37 @@ namespace Clave2_Grupo3.Forms
             this.groupBox1.Font = new System.Drawing.Font("Maiandra GD", 10.2F);
             this.groupBox1.Location = new System.Drawing.Point(15, 21);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1644, 707);
+            this.groupBox1.Size = new System.Drawing.Size(1732, 707);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Gestionar Vuelos";
+            // 
+            // dgvVuelos
+            // 
+            this.dgvVuelos.BackgroundColor = System.Drawing.Color.White;
+            this.dgvVuelos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVuelos.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.dgvVuelos.Location = new System.Drawing.Point(617, 49);
+            this.dgvVuelos.Name = "dgvVuelos";
+            this.dgvVuelos.RowHeadersWidth = 51;
+            this.dgvVuelos.RowTemplate.Height = 24;
+            this.dgvVuelos.Size = new System.Drawing.Size(1092, 593);
+            this.dgvVuelos.TabIndex = 22;
+            this.dgvVuelos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVuelos_CellClick);
             // 
             // VuelosForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.NavajoWhite;
-            this.ClientSize = new System.Drawing.Size(1671, 750);
+            this.ClientSize = new System.Drawing.Size(1759, 750);
             this.Controls.Add(this.groupBox1);
             this.Name = "VuelosForm";
             this.Text = "VuelosForm";
             this.Load += new System.EventHandler(this.VuelosForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVuelos)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVuelos)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -345,8 +335,8 @@ namespace Clave2_Grupo3.Forms
         private System.Windows.Forms.Button btnModificar;
         private System.Windows.Forms.Button btnEliminar;
         private System.Windows.Forms.Button btnBuscar;
-        private System.Windows.Forms.DataGridView dgvVuelos;
         private System.Windows.Forms.Label lblVuelos;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.DataGridView dgvVuelos;
     }
 }

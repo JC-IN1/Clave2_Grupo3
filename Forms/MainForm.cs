@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Clave2_Grupo3.Models;
+using MySql.Data.MySqlClient;
+using Clave2_Grupo3.Conexion;
 
 namespace Clave2_Grupo3.Forms
 {
@@ -65,23 +67,15 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            UsuariosForm formUsuarios = new UsuariosForm();
+            UsuariosForm formUsuarios = new UsuariosForm(usuarioActual);
             formUsuarios.ShowDialog();
-        }
-
-        private void btnCerrarSesion_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            LoginForm login = new LoginForm();
-            login.Show();
         }
 
         private void btnVuelos_Click(object sender, EventArgs e)
         {
-            VuelosForm formVuelos = new VuelosForm();
+            VuelosForm formVuelos = new VuelosForm(usuarioActual);
             formVuelos.ShowDialog();
         }
 
@@ -95,6 +89,12 @@ namespace Clave2_Grupo3.Forms
         {
             PagosForm formPagos = new PagosForm(usuarioActual);
             formPagos.ShowDialog();
+        }
+        private void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            LoginForm login = new LoginForm();
+            login.Show();
         }
     }
 }

@@ -8,18 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+using Clave2_Grupo3.Conexion;
 
 namespace Clave2_Grupo3.Forms
 {
     public partial class UsuariosForm : Form
     {
-        private List<Usuario> listaUsuarios = new List<Usuario>();
-        private int siguienteId = 1;
         public UsuariosForm()
         {
             InitializeComponent();
         }
-
+        private Usuario usuarioActual;
+        public UsuariosForm(Usuario usuario)
+        {
+            InitializeComponent();
+            usuarioActual = usuario;
+        }
         private void UsuariosForm_Load(object sender, EventArgs e)
         {
             cmbRol.Items.AddRange(new string[] { "Administrador", "Operador", "Cliente" });
@@ -30,94 +35,83 @@ namespace Clave2_Grupo3.Forms
             dgvUsuarios.MultiSelect = false;
             dgvUsuarios.RowHeadersVisible = false;
 
-            ActualizarGrid();
+            CargarUsuariosDesdeBD();
         }
-
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-
             if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
             {
                 MessageBox.Show("Debe ingresar usuario y contraseña.");
                 return;
             }
 
-            Usuario nuevo = new Usuario
+            try
             {
-                Id = siguienteId++,
-                NombreUsuario = txtUsuario.Text,
-                Contrasena = txtContrasena.Text,
-                Rol = cmbRol.Text
-            };
+                    ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "INSERT INTO usuarios (nombre_usuario, contrasena, rol) VALUES (@nombre, @contrasena, @rol)";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
+                    cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
+                    cmd.Parameters.AddWithValue("@rol", cmbRol.Text);
+                    cmd.ExecuteNonQuery();
+                }
 
-            listaUsuarios.Add(nuevo);
-            ActualizarGrid();
-            LimpiarCampos();
+                MessageBox.Show("Usuario agregado correctamente");
+                CargarUsuariosDesdeBD();
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al agregar usuario: " + ex.Message);
+            }
         }
-
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"txtId='{txtId.Text}' selectedRows={dgvUsuarios.SelectedRows.Count} rows={dgvUsuarios.Rows.Count}");
+            // Si no hay texto en txtId, intentar obtener el seleccionado del grid
+            if (string.IsNullOrWhiteSpace(txtId.Text))
+            {
+                if (dgvUsuarios.CurrentRow != null)
+                {
+                    txtId.Text = dgvUsuarios.CurrentRow.Cells["id"].Value?.ToString() ?? "";
+                    txtUsuario.Text = dgvUsuarios.CurrentRow.Cells["nombre_usuario"].Value?.ToString() ?? "";
+                    txtContrasena.Text = dgvUsuarios.CurrentRow.Cells["contrasena"].Value?.ToString() ?? "";
+                    cmbRol.Text = dgvUsuarios.CurrentRow.Cells["rol"].Value?.ToString() ?? "";
+                }
+                else
+                {
+                    MessageBox.Show("Seleccione un usuario antes de modificar.");
+                    return;
+                }
+            }
 
             try
             {
-                // Si no hay Id en txtId, intentar tomarlo de la selección actual
-                if (string.IsNullOrWhiteSpace(txtId.Text))
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
                 {
-                    if (dgvUsuarios.SelectedRows.Count > 0)
-                    {
-                        var filaSel = dgvUsuarios.SelectedRows[0];
-                        txtId.Text = filaSel.Cells["Id"].Value?.ToString() ?? "";
-                        txtUsuario.Text = filaSel.Cells["NombreUsuario"].Value?.ToString() ?? "";
-                        txtContrasena.Text = filaSel.Cells["Contrasena"].Value?.ToString() ?? "";
-                        cmbRol.Text = filaSel.Cells["Rol"].Value?.ToString() ?? "";
-                    }
-                    else
-                    {
-                        MessageBox.Show("Seleccione un usuario de la tabla para modificar.", "Atención");
-                        return;
-                    }
+                    conn.Open();
+                    string query = "UPDATE usuarios SET nombre_usuario=@nombre, contrasena=@contrasena, rol=@rol WHERE id=@id";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
+                    cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
+                    cmd.Parameters.AddWithValue("@rol", cmbRol.Text);
+                    cmd.Parameters.AddWithValue("@id", txtId.Text);
+                    cmd.ExecuteNonQuery();
                 }
 
-                if (!int.TryParse(txtId.Text, out int id))
-                {
-                    MessageBox.Show("Id inválido.", "Error");
-                    return;
-                }
-
-                var usuario = listaUsuarios.FirstOrDefault(u => u.Id == id);
-                if (usuario == null)
-                {
-                    MessageBox.Show("Usuario no encontrado.", "Error");
-                    return;
-                }
-
-                // Validaciones de campos
-                if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
-                {
-                    MessageBox.Show("Complete usuario y contraseña.", "Atención");
-                    return;
-                }
-
-                // Actualizar objeto
-                usuario.NombreUsuario = txtUsuario.Text.Trim();
-                usuario.Contrasena = txtContrasena.Text.Trim();
-                usuario.Rol = cmbRol.Text.Trim();
-
-                // Refrescar grid y limpiar
-                ActualizarGrid();
+                MessageBox.Show("Usuario modificado correctamente");
+                CargarUsuariosDesdeBD();
                 LimpiarCampos();
-
-                MessageBox.Show("Usuario modificado correctamente.", "Éxito");
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al modificar usuario: " + ex.Message);
             }
         }
-
-
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
@@ -127,69 +121,75 @@ namespace Clave2_Grupo3.Forms
                 return;
             }
 
-            int id = int.Parse(txtId.Text);
-            listaUsuarios.RemoveAll(u => u.Id == id);
-            ActualizarGrid();
-            LimpiarCampos();
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM usuarios WHERE id=@id";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", txtId.Text);
+                    cmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Usuario eliminado correctamente");
+                CargarUsuariosDesdeBD();
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar usuario: " + ex.Message);
+            }
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            string buscar = txtUsuario.Text.Trim();
-            var filtrados = listaUsuarios.Where(u => u.NombreUsuario.ToLower().Contains(buscar.ToLower())).ToList();
+            string filtro = txtUsuario.Text.Trim();
 
-            dgvUsuarios.DataSource = null;
-            dgvUsuarios.DataSource = filtrados;
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = "SELECT * FROM usuarios WHERE nombre_usuario LIKE @filtro";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@filtro", "%" + filtro + "%");
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvUsuarios.DataSource = dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar usuario: " + ex.Message);
+            }
         }
 
         private void dgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Evitar encabezado o índices inválidos
-            if (dgvUsuarios.Rows.Count == 0 || e.RowIndex < 0) return;
+            // Evitar errores si se hace clic en encabezado
+            if (e.RowIndex < 0) return;
 
             try
             {
-                var fila = dgvUsuarios.Rows[e.RowIndex];
+                DataGridViewRow fila = dgvUsuarios.Rows[e.RowIndex];
 
-                // Usar safe access y ToString() condicional para evitar NullReference
-                txtId.Text = fila.Cells["Id"].Value?.ToString() ?? "";
-                txtUsuario.Text = fila.Cells["Nombre del Usuario"].Value?.ToString() ?? "";
-                txtContrasena.Text = fila.Cells["Contraseña"].Value?.ToString() ?? "";
-                cmbRol.Text = fila.Cells["Rol"].Value?.ToString() ?? "";
+                txtId.Text = fila.Cells["id"].Value?.ToString() ?? "";
+                txtUsuario.Text = fila.Cells["nombre_usuario"].Value?.ToString() ?? "";
+                txtContrasena.Text = fila.Cells["contrasena"].Value?.ToString() ?? "";
+                cmbRol.Text = fila.Cells["rol"].Value?.ToString() ?? "";
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar fila seleccionada: " + ex.Message);
             }
         }
-        private void ActualizarGrid()
-        {
-            try
-            {
-                dgvUsuarios.CellClick -= dgvUsuarios_CellClick;
-
-                dgvUsuarios.AutoGenerateColumns = false; 
-                dgvUsuarios.DataSource = null;
-
-                if (listaUsuarios == null)
-                    listaUsuarios = new List<Usuario>();
-
-                dgvUsuarios.DataSource = listaUsuarios;
-                dgvUsuarios.AutoGenerateColumns = true;
-
-                dgvUsuarios.ClearSelection();
-                txtId.Clear();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al actualizar la lista de usuarios: " + ex.Message);
-            }
-            finally
-            {
-                dgvUsuarios.CellClick += dgvUsuarios_CellClick;
-            }
-        }
-
 
         private void LimpiarCampos()
         {
@@ -197,6 +197,48 @@ namespace Clave2_Grupo3.Forms
             txtUsuario.Clear();
             txtContrasena.Clear();
             cmbRol.SelectedIndex = -1;
+        }
+
+        private void CargarUsuariosDesdeBD()
+        {
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "SELECT * FROM usuarios";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    dgvUsuarios.AutoGenerateColumns = true;
+                    dgvUsuarios.DataSource = dt;
+                }
+
+                // Cambiar encabezados (sin afectar nombres internos)
+                if (dgvUsuarios.Columns.Contains("id"))
+                    dgvUsuarios.Columns["id"].HeaderText = "ID";
+
+                if (dgvUsuarios.Columns.Contains("nombre_usuario"))
+                    dgvUsuarios.Columns["nombre_usuario"].HeaderText = "Nombre del Usuario";
+
+                if (dgvUsuarios.Columns.Contains("contrasena"))
+                    dgvUsuarios.Columns["contrasena"].HeaderText = "Contraseña";
+
+                if (dgvUsuarios.Columns.Contains("rol"))
+                    dgvUsuarios.Columns["rol"].HeaderText = "Rol";
+
+                // Centrar los encabezados
+                foreach (DataGridViewColumn col in dgvUsuarios.Columns)
+                {
+                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar usuarios: " + ex.Message);
+            }
         }
 
     }
