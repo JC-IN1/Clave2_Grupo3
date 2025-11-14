@@ -21,12 +21,12 @@ namespace Clave2_Grupo3.Forms
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            // Carga de usuarios simulada (más adelante vendrán de MySQL)
             usuarios.Add(new Usuario { Id = 1, NombreUsuario = "admin", Contrasena = "1234", Rol = "Administrador" });
             usuarios.Add(new Usuario { Id = 2, NombreUsuario = "operador", Contrasena = "abcd", Rol = "Operador" });
             usuarios.Add(new Usuario { Id = 3, NombreUsuario = "Juan", Contrasena = "2345", Rol = "Cliente" });
         }
 
+        //Metodo para el boton Ingresar
         private void btnIngresar_Click(object sender, EventArgs e)
         {
             string user = txtUsuario.Text.Trim();

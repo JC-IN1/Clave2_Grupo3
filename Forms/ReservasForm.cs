@@ -10,18 +10,21 @@ using Clave2_Grupo3.Conexion;
 namespace Clave2_Grupo3.Forms
 {
     public partial class ReservasForm : Form
-    {
+    {   
+        //Constructor Vacio
         public ReservasForm()
         {
             InitializeComponent();
         }
         private Usuario usuarioActual;
 
+        //Constructor para usarlo dentro del formulario
         public ReservasForm(Usuario usuario)
         {
             InitializeComponent();
             usuarioActual = usuario;
         }
+
 
         private void ReservasForm_Load(object sender, EventArgs e)
         {
@@ -37,7 +40,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-        // 🔹 Cargar combos desde la base
+        // Cargar combos desde la base
         private void CargarCombosDesdeBD()
         {
             try
@@ -47,7 +50,7 @@ namespace Clave2_Grupo3.Forms
                 {
                     conn.Open();
 
-                    // 🔹 Cargar vuelos
+                    // Cargar vuelos
                     MySqlDataAdapter daVuelos = new MySqlDataAdapter(
                         "SELECT id, CONCAT('Vuelo ', id) AS descripcion FROM vuelos", conn);
                     DataTable dtVuelos = new DataTable();
@@ -69,6 +72,8 @@ namespace Clave2_Grupo3.Forms
                 MessageBox.Show("Error al cargar combos: " + ex.Message);
             }
         }
+
+        //Cargar pasajeros desde la base de datos
         private void CargarPasajerosDesdeUsuarios()
         {
             try
@@ -78,9 +83,7 @@ namespace Clave2_Grupo3.Forms
                 {
                     conn.Open();
 
-                    string query = @"SELECT id, nombre_usuario 
-                             FROM usuarios 
-                             WHERE rol = 'Cliente'";
+                    string query = @"SELECT id, nombre_usuario FROM usuarios WHERE rol = 'Cliente'";
 
                     // Si es cliente, solo cargar SU propio registro
                     if (usuarioActual != null &&
@@ -102,13 +105,69 @@ namespace Clave2_Grupo3.Forms
                     da.Fill(dt);
 
                     cmbPasajero.DataSource = dt;
-                    cmbPasajero.DisplayMember = "nombre_usuario";  // lo que se muestra
+                    cmbPasajero.DisplayMember = "nombre_usuario";  // lo que se muestra en panatalla
                     cmbPasajero.ValueMember = "id";                // id del usuario
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar pasajeros desde usuarios: " + ex.Message);
+            }
+        }
+
+        //Cargar Reservas desde la base de datos
+        private void CargarReservasDesdeBD()
+        {
+            try
+            {
+                ConexionBD conexion = new ConexionBD();
+                using (MySqlConnection conn = conexion.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    string query = @"
+                SELECT r.id,
+                       u.nombre_usuario AS Pasajero,
+                       CONCAT('Vuelo ', v.id) AS Vuelo,
+                       r.fecha_reserva,
+                       r.precio_total,
+                       r.estado,
+                       r.equipaje_mano,
+                       r.equipaje_bodega,
+                       r.preferencia_asiento
+                FROM reservas r
+                INNER JOIN usuarios u ON r.pasajero_id = u.id
+                INNER JOIN vuelos v ON r.vuelo_id = v.id";
+
+                    // Si es cliente, mostrar solo sus reservas
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query += " WHERE u.nombre_usuario = @cliente";
+                    }
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    if (usuarioActual != null &&
+                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
+                    {
+                        cmd.Parameters.AddWithValue("@cliente", usuarioActual.NombreUsuario);
+                    }
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvReservas.DataSource = dt;
+
+                    // Alinear encabezados
+                    foreach (DataGridViewColumn col in dgvReservas.Columns)
+                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar reservas: " + ex.Message);
             }
         }
 
@@ -159,7 +218,7 @@ namespace Clave2_Grupo3.Forms
                     }
                 }
 
-                // 🔹 Calcular recargos según equipaje
+                // Calcular recargos según equipaje
                 decimal total = tarifaBase;
                 string detalleEquipaje = "";
 
@@ -175,7 +234,7 @@ namespace Clave2_Grupo3.Forms
                     detalleEquipaje += (detalleEquipaje != "" ? " y " : "") + "con equipaje en bodega (+20%)";
                 }
 
-                // 🔹 Mostrar resultado
+                // Mostrar resultado
                 txtPrecio.Text = total.ToString("F2");
 
                 MessageBox.Show(
@@ -192,62 +251,8 @@ namespace Clave2_Grupo3.Forms
                 MessageBox.Show("Error al calcular precio: " + ex.Message);
             }
         }
-        private void CargarReservasDesdeBD()
-        {
-            try
-            {
-                ConexionBD conexion = new ConexionBD();
-                using (MySqlConnection conn = conexion.ObtenerConexion())
-                {
-                    conn.Open();
 
-                    string query = @"
-                SELECT r.id,
-                       u.nombre_usuario AS Pasajero,
-                       CONCAT('Vuelo ', v.id) AS Vuelo,
-                       r.fecha_reserva,
-                       r.precio_total,
-                       r.estado,
-                       r.equipaje_mano,
-                       r.equipaje_bodega,
-                       r.preferencia_asiento
-                FROM reservas r
-                INNER JOIN usuarios u ON r.pasajero_id = u.id
-                INNER JOIN vuelos v ON r.vuelo_id = v.id
-            ";
-
-                    // Si es cliente, mostrar solo sus reservas
-                    if (usuarioActual != null &&
-                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
-                    {
-                        query += " WHERE u.nombre_usuario = @cliente";
-                    }
-
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-
-                    if (usuarioActual != null &&
-                        usuarioActual.Rol.Equals("Cliente", StringComparison.OrdinalIgnoreCase))
-                    {
-                        cmd.Parameters.AddWithValue("@cliente", usuarioActual.NombreUsuario);
-                    }
-
-                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-
-                    dgvReservas.DataSource = dt;
-
-                    // Alinear encabezados
-                    foreach (DataGridViewColumn col in dgvReservas.Columns)
-                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar reservas: " + ex.Message);
-            }
-        }
-
+        //Metodo para boton Guardar
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -260,7 +265,7 @@ namespace Clave2_Grupo3.Forms
                     int vueloId = Convert.ToInt32(cmbVuelo.SelectedValue);
                     int pasajeroId = 0;
 
-                    // 🧩 Verificar asientos disponibles
+                    // Verificar asientos disponibles
                     int asientosDisponibles = 0;
                     string queryAsientos = "SELECT asientos_disponibles FROM vuelos WHERE id = @id";
                     using (MySqlCommand cmdAsientos = new MySqlCommand(queryAsientos, conn))
@@ -273,7 +278,7 @@ namespace Clave2_Grupo3.Forms
 
                     if (asientosDisponibles <= 0)
                     {
-                        MessageBox.Show("❌ No hay asientos disponibles para este vuelo.",
+                        MessageBox.Show("No hay asientos disponibles para este vuelo.",
                             "Sin cupo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
@@ -309,7 +314,7 @@ namespace Clave2_Grupo3.Forms
                         pasajeroId = Convert.ToInt32(cmbPasajero.SelectedValue);
                     }
 
-                    // 🧮 Validar precio antes de guardar
+                    // Validar precio antes de guardar
                     if (string.IsNullOrWhiteSpace(txtPrecio.Text))
                     {
                         MessageBox.Show("Debe calcular el precio antes de guardar la reserva.");
@@ -318,7 +323,7 @@ namespace Clave2_Grupo3.Forms
 
                     decimal precio = decimal.Parse(txtPrecio.Text);
 
-                    // 💾 Insertar reserva
+                    // Insertar reserva
                     string queryReserva = @"INSERT INTO reservas 
                 (vuelo_id, pasajero_id, fecha_reserva, precio_total, estado, equipaje_mano, equipaje_bodega, preferencia_asiento)
                 VALUES (@vuelo, @pasajero, NOW(), @precio, @estado, @mano, @bodega, @asiento)";
@@ -336,7 +341,7 @@ namespace Clave2_Grupo3.Forms
                         cmdReserva.ExecuteNonQuery();
                     }
 
-                    // 🔄 Restar un asiento disponible
+                    // Restar un asiento disponible
                     string queryActualizar = "UPDATE vuelos SET asientos_disponibles = asientos_disponibles - 1 WHERE id = @id";
                     using (MySqlCommand cmdUpdate = new MySqlCommand(queryActualizar, conn))
                     {
@@ -344,11 +349,11 @@ namespace Clave2_Grupo3.Forms
                         cmdUpdate.ExecuteNonQuery();
                     }
 
-                    MessageBox.Show("✅ Reserva agregada correctamente. Asiento confirmado.",
+                    MessageBox.Show("Reserva agregada correctamente. Asiento confirmado.",
                         "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                // 🔁 Refrescar datos
+                // Refrescar datos
                 CargarReservasDesdeBD();
                 LimpiarCampos();
             }
@@ -360,8 +365,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
-
-        // 🔹 Modificar
+        // Metodo para boton Modificar
         private void btnModificar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -407,7 +411,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
-        // Eliminar
+        //Metodo para boton Eliminar
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -439,6 +443,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
+        //Metodo para boton Buscar
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             try
@@ -513,14 +518,14 @@ namespace Clave2_Grupo3.Forms
                 // ID
                 txtId.Text = fila.Cells["id"].Value?.ToString();
 
-                // PASAJERO (por nombre)
+                // PASAJERO 
                 string pasajeroNombre = fila.Cells["Pasajero"].Value?.ToString();
                 if (!string.IsNullOrEmpty(pasajeroNombre))
                 {
                     cmbPasajero.Text = pasajeroNombre;
                 }
 
-                // VUELO ("Vuelo X" → obtener X)
+                // VUELO 
                 string vueloTexto = fila.Cells["Vuelo"].Value?.ToString();
                 if (!string.IsNullOrEmpty(vueloTexto))
                 {
@@ -553,9 +558,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-
-
-        // 🔹 Limpiar campos
+        // Limpiar campos
         private void LimpiarCampos()
         {
             txtId.Clear();

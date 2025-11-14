@@ -38,6 +38,7 @@ namespace Clave2_Grupo3.Forms
             CargarUsuariosDesdeBD();
         }
 
+        //Metodo para boton Agregar
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
@@ -69,6 +70,8 @@ namespace Clave2_Grupo3.Forms
                 MessageBox.Show("Error al agregar usuario: " + ex.Message);
             }
         }
+
+        //Metodo para boton Modificar
         private void btnModificar_Click(object sender, EventArgs e)
         {
             // Si no hay texto en txtId, intentar obtener el seleccionado del grid
@@ -113,6 +116,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
+        //Metodo para botno ELiminar
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -191,14 +195,8 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-        private void LimpiarCampos()
-        {
-            txtId.Clear();
-            txtUsuario.Clear();
-            txtContrasena.Clear();
-            cmbRol.SelectedIndex = -1;
-        }
 
+        //Cargar usuarios desde la base de datos
         private void CargarUsuariosDesdeBD()
         {
             try
@@ -216,7 +214,7 @@ namespace Clave2_Grupo3.Forms
                     dgvUsuarios.DataSource = dt;
                 }
 
-                // Cambiar encabezados (sin afectar nombres internos)
+                // Cambiar encabezados 
                 if (dgvUsuarios.Columns.Contains("id"))
                     dgvUsuarios.Columns["id"].HeaderText = "ID";
 
@@ -241,5 +239,12 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
+        private void LimpiarCampos()
+        {
+            txtId.Clear();
+            txtUsuario.Clear();
+            txtContrasena.Clear();
+            cmbRol.SelectedIndex = -1;
+        }
     }
 }

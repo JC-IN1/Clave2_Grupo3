@@ -87,7 +87,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-
+        //Metodo para boton Modificar
         private void btnModificar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -128,6 +128,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
+        //Metodo para boton Eliminar
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -135,10 +136,6 @@ namespace Clave2_Grupo3.Forms
                 MessageBox.Show("Seleccione un pago para eliminar.");
                 return;
             }
-
-            if (MessageBox.Show("¿Está seguro de eliminar este pago?",
-                "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                return;
 
             try
             {
@@ -164,6 +161,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
+        //Metodo para boton Buscar
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             try
@@ -242,11 +240,11 @@ namespace Clave2_Grupo3.Forms
             {
                 DataGridViewRow fila = dgvPagos.Rows[e.RowIndex];
 
-                // ID del pago (string en textbox)
+                // ID del pago 
                 object idObj = fila.Cells["id"].Value;
                 txtId.Text = idObj?.ToString() ?? "";
 
-                // Monto (seguro)
+                // Monto 
                 txtMonto.Clear();
                 if (fila.DataGridView.Columns.Contains("monto"))
                 {
@@ -263,14 +261,14 @@ namespace Clave2_Grupo3.Forms
                     }
                 }
 
-                // Método y estado (texto directo, sin conversiones)
+                // Método y estado 
                 if (fila.DataGridView.Columns.Contains("metodo"))
                     cmbMetodo.Text = fila.Cells["metodo"].Value?.ToString() ?? "";
 
                 if (fila.DataGridView.Columns.Contains("estado_pago"))
                     cmbEstado.Text = fila.Cells["estado_pago"].Value?.ToString() ?? "";
 
-                // Reserva: usamos la columna técnica 'reserva_id' para SelectedValue
+                
                 if (fila.DataGridView.Columns.Contains("reserva_id"))
                 {
                     var resObj = fila.Cells["reserva_id"].Value;
@@ -286,14 +284,14 @@ namespace Clave2_Grupo3.Forms
                 }
                 else
                 {
-                    // si por alguna razón no existe la columna reserva_id, intentamos extraer de la columna Reserva
+                    
                     if (fila.DataGridView.Columns.Contains("Reserva"))
                     {
-                        cmbReserva.SelectedIndex = -1; // no podemos mapear
+                        cmbReserva.SelectedIndex = -1; 
                     }
                 }
 
-                // Fecha pago (segura)
+                // Fecha pago 
                 if (fila.DataGridView.Columns.Contains("fecha_pago"))
                 {
                     var fechaObj = fila.Cells["fecha_pago"].Value;
@@ -313,6 +311,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
+        //Cargar los pagos desde la Base de datos
         private void CargarPagosDesdeBD()
         {
             try
@@ -378,7 +377,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-
+        //Cargar las reservas desde la base de datos
         private void CargarReservas()
         {
             try
@@ -411,6 +410,7 @@ namespace Clave2_Grupo3.Forms
                 MessageBox.Show("Error al cargar reservas: " + ex.Message);
             }
         }
+
         private void cmbReserva_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbReserva.SelectedValue == null) return;
@@ -440,6 +440,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
+        //Limpiar Campos 
         private void LimpiarCampos()
         {
             txtId.Clear();

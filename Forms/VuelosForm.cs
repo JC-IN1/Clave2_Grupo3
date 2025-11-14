@@ -70,7 +70,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-
+        //Metodo para el boton Agregar
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
@@ -104,6 +104,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
+        //Metodo para el boton Moificar
         private void btnModificar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -148,7 +149,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
-
+        //Metodo para el boton eliminar
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtId.Text))
@@ -179,6 +180,7 @@ namespace Clave2_Grupo3.Forms
             LimpiarCampos();
         }
 
+        //Metodo para el boton buscar
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             string filtro = cmbAerolinea.Text.Trim();
@@ -260,17 +262,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
-        private void LimpiarCampos()
-        {
-            txtId.Clear();
-            txtTarifa.Clear();
-            txtAsientos.Clear();
-            cmbAerolinea.SelectedIndex = -1;
-            cmbAvion.SelectedIndex = -1;
-            cmbRuta.SelectedIndex = -1;
-            dtpSalida.Value = DateTime.Now;
-            dtpLlegada.Value = DateTime.Now;
-        }
+        //Cargar combos desde la base de datos
         private void CargarCombosDesdeBD()
         {
             try
@@ -311,6 +303,7 @@ namespace Clave2_Grupo3.Forms
             }
         }
 
+        //Cargar Vuelos desde la base da datos
         private void CargarVuelosDesdeBD()
         {
             try
@@ -337,7 +330,7 @@ namespace Clave2_Grupo3.Forms
                     dgvVuelos.AutoGenerateColumns = true;
                     dgvVuelos.DataSource = dt;
 
-                    // Encabezados bonitos
+                    // Encabezados 
                     dgvVuelos.Columns["id"].HeaderText = "ID";
                     dgvVuelos.Columns["aerolinea_id"].HeaderText = "Aerolínea ID";
                     dgvVuelos.Columns["avion_id"].HeaderText = "Avión ID";
@@ -357,6 +350,19 @@ namespace Clave2_Grupo3.Forms
             {
                 MessageBox.Show("Error al cargar vuelos: " + ex.Message);
             }
+        }
+
+        //Limpiar Campos
+        private void LimpiarCampos()
+        {
+            txtId.Clear();
+            txtTarifa.Clear();
+            txtAsientos.Clear();
+            cmbAerolinea.SelectedIndex = -1;
+            cmbAvion.SelectedIndex = -1;
+            cmbRuta.SelectedIndex = -1;
+            dtpSalida.Value = DateTime.Now;
+            dtpLlegada.Value = DateTime.Now;
         }
 
     }
